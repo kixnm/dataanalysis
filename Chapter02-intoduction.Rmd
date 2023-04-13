@@ -1,0 +1,695 @@
+# Rを使ってみよう：四則演算から外部データの読み込みまで
+
+## 基本的な計算
+
+計算してみよう
+
+```{r intro}
+# 足し算・引き算
+
+1+1
+
+3-1
+
+150-121
+
+```
+
+```{r intro2}
+# 記号「*」は掛け算を意味する
+2*2
+
+```
+
+```{r intro3}
+# 割り算は「/」を用いる
+10/5
+
+```
+
+```{r intro4}
+# 「^」はべき乗を意味する。
+
+3^2
+
+3^3
+
+3^4
+
+```
+
+```{r intro4b}
+# 「sqrt」で平方根が計算できる。
+
+
+sqrt(100)
+
+sqrt(25)
+
+sqrt(8)
+
+sqrt(2)
+
+```
+
+
+
+
+## 変数の定義
+
+```{r intro5}
+# 「<-」は代入操作を意味する
+x<-4
+
+2*x
+
+```
+
+
+```{r intro6}
+# ベクトルを代入
+x<-1:10
+
+print(x)
+
+# seq(a,b,c)：aからbまでをc刻みで生成
+y<-seq(1,10,1)
+
+print(y)
+
+
+z<-seq(1,10,2)
+
+print(z)
+
+```
+
+```{r intro7}
+# 文字列の扱い
+
+my_words<-c("Good morning", "Good afternoon", "Good evening")
+
+print(my_words)
+
+First<-"Good"
+
+Second<-c("mornig", "afternoon", "evening")
+
+# デフォルトでは、スペースで接続
+First_Second<-paste(First, Second)
+
+print(First_Second)
+
+# 接続の記号を変更
+FSplus<-paste(First, Second,sep="+")
+
+print(FSplus)
+
+```
+
+## データフレーム
+
+上の例では、`c()`を使って、ベクトルとしてデータを扱う方法を確認しました。実際の分析では、ベクトルをいくつか集めたデータフレームを使って実証分析を行うことがほとんどです。以下では、ベクトルからデータフレームを作成する方法を示します。ただし、実際の分析では、ほとんどの場合、外部データ（行政が提供するエクセルファイルなど）から直接データフレームとして読み込みます。
+
+```{r intro8a}
+
+# 日本の都道府県には固有の番号がある。
+prefcode<-c(1,
+            2,3,4,5,6,7,
+            8,9,10,11,12,13,14,
+            15,16,17,18,
+            19,20,21,22,23,
+            24,25,26,27,28,29,30,
+            31,32,33,34,35,
+            36,37,38,39,
+            40,41,42,43,44,45,46,
+            47)
+
+prefnameJ<-c("01北海道",
+             "02青森県","03岩手県","04宮城県","05秋田県",
+             "06山形県","07福島県",
+             "08茨城県","09栃木県","10群馬県","11埼玉県",
+             "12千葉県","13東京都","14神奈川県",
+             "15新潟県","16富山県","17石川県","18福井県",
+             "19山梨県","20長野県","21岐阜県","22静岡県",
+             "23愛知県",
+             "24三重県","25滋賀県","26京都府","27大阪府",
+             "28兵庫県","29奈良県","30和歌山県",
+             "31鳥取県","32島根県","33岡山県","34広島県",
+             "35山口県",
+             "36徳島県","37香川県","38愛媛県","39高知県",
+             "40福岡県","41佐賀県","42長崎県","43熊本県",
+             "44大分県","45宮崎県","46鹿児島県",
+             "47沖縄県")
+
+
+print(prefnameJ)
+
+```
+
+
+`print(prefnameJ)`で都道府県名を出力しています。ここで`[1]`は`prefnameJ`というベクトルの中の第１要素を意味しています。出力が長い場合、改行されるごとに先頭の要素番号が出力されます。
+
+
+```{r intro8b}
+
+# 以下のデータは
+# 総務省「統計でみる都道府県のすがた2020」
+# より抜粋している。
+
+# 変数の対応関係
+# A1101_総人口【人】	
+# B1101_総面積（北方地域及び竹島を除く）【ｈａ】	
+# D110101_市町村数【‐】
+
+A1101<-c(5286000, #北海道
+         1263000,1241000,2316000,981000,1090000,1864000, #東北
+         2877000,1946000,1952000,7330000,6255000,13822000,9177000, #関東
+         2246000,1050000,1143000,774000, #新潟＋北陸
+         817000,2063000,1997000,3659000,7537000, #中部
+         1791000,1412000,2591000,8813000,5484000,1339000,935000, #近畿
+         560000,680000,1898000,2817000,1370000, #中国
+         736000,962000,1352000,706000, #四国
+         5107000,819000,1341000,1757000,1144000,1081000,1614000, #九州
+         1448000) #沖縄
+
+B1101<-c(7842077,
+         964565,1527501,728223,1163752,932315,1378390,
+         609733,640809,636228,379775,515761,219396,241616,
+         1258423,424761,418605,419052,
+         446527,1356156,1062129,777735,517296,
+         577442,401738,461220,190529,840095,369094,472465,
+         350714,670807,711433,847961,611253,
+         414675,187678,567624,710363,
+         498651,244070,413090,740950,634073,773532,918702,
+         228105)
+
+D110101<-c(179,
+           40,33,35,25,35,59,
+           44,25,35,63,54,62,33,
+           30,15,19,17,
+           27,77,42,35,54,
+           29,19,26,43,41,39,30,
+           19,19,27,23,19,
+           24,17,20,34,
+           60,20,21,45,18,26,43,
+           41)
+
+testDB<-data.frame(cbind(prefcode,prefnameJ,A1101,B1101,D110101))
+
+head(testDB)
+```
+
+## データの型
+
+コンピュータが保存しているデータには、型があります。言語によっては事前にどの型で読み込むかを宣言する必要がありますが、`R`は自動で判断します。
+
+|型 | 解説 |
+|:-----------:|:----------------------------|
+|数値型 |整数だけでなく小数点を含む数も対象。一般の四則演算と同様にカッコ内は先に計算される。 |
+|文字列型 | 文字、特殊文字、数字を組み合わせた変数で、文字列型は四則演算は適用できない。文字列型であることを指定するためには、`"`(ダブルクオーテーション)で囲む。 |
+|論理型 | TRUE (真)とFALSE (偽)という２つの値をとる。ブーリアン型と呼ばれることもある。`TRUE`と`FALSE`は、`T`や`F`と省略の可能。|
+|因子型 | 女性を0、男性を1とするなど、順序のない(=factor型)カテゴリカルデータを扱う場合に使用。|
+|整数型 | 値を整数として扱うための型で、入力時に値の後ろに`L`をつける。|
+|複素型 | 入力した値を複素数として扱うための型で、入力時に値の後ろに`i`をつける。|
+
+データを整理している途中で自分では意図せずともデータの型が変わってしまう場合があります。そのような場合はデータの型を変換する必要があります。
+
+例えば、上の例で、`A1101`というベクトルは、数値型として読み込まれています。そのため、平均を計算することができます。
+
+```{r intro9a}
+
+is.numeric(A1101)
+
+mean(A1101)
+```
+
+ところが、データフレームとしてベクトルをまとめるステップで文字列データに変換されています。そのため、データフレームの中にある`A1101`の平均が計算できません。
+
+```{r intro9b}
+
+is.numeric(testDB$A1101)
+
+str(testDB$A1101)
+
+mean(testDB$A1101)
+
+```
+
+`chr`という記号が文字列型であることを示しています。そのため、データの型を文字列型から数値型に変換する必要があります。
+
+```{r intro9d}
+
+testDB$A1101<-as.numeric(testDB$A1101)
+
+mean(testDB$A1101)
+
+```
+
+
+また、データの尺度にもいくつか種類があります。以下の表は[こちら](https://www.kyoritsu-pub.co.jp/bookdetail/9784320124745)から引用しています (p114)。
+
+| 尺度 | 例 | 適用可能な演算 |
+|:----------:|:--------------------:|:----------|
+|名義尺度 | 果物、りんご、バナナ、オレンジなど | `==`, `!=` |
+|順序尺度 | ホテルのレーティング、５つ星、４つ星など | `==`, `!=` |
+|比率尺度 | 長さ、１インチ、1.5インチ、2インチなど  | `==`, `!=`, `<`,`>`,`+`,`-`,`*`,`/` |
+|間隔尺度 | 日付、2012/05/15, 2015/04/17など| `==`, `!=`, `<`,`>`,`+`,`-`|
+
+
+## パッケージの考え方
+
+`R`には`package`という概念があります。プログラミング言語は様々な用途が想定されています。学術研究に限っても、経済学で使用する内容と工学系あるいは医学系で利用する内容は大きく異なります。これらの用途全てに対応するように`R`本体を備えてしまうとリソースの無駄が生じます。そのため、`R`では、`R`本体の機能を最小限に制限し、自身の目的に合わせて必要な道具を付け足していく方式をとっています。その付け足す道具を`package`と呼んでいます。
+
+`package`は一回だけインストールする必要があります。インストールはインターネットを使用しておこないますので、インターネットに接続していることが必要です。そして、インストール済みの`package`でも使用する際は毎回呼び出す必要があります。この呼び出しは自身の端末の中にあるものを呼び出すので、インターネット接続は不要です。
+
+文房具に例えると、水彩画を描くために絵の具が必要なので、絵の具を文具店に買いにいくことがインストールです。いざ、今から絵の具を使って絵を描くぞ、というタイミングで絵の具をパレットの上に広げることが「呼び出し」です。
+
+
+## 外部ファイルの読み込み
+
+では実際に`package`を使って、外部ファイルを読み込んでみましょう。
+
+デフォルトの`R`ではエクセルファイルをそのまま読むことはできません。ここではエクセルファイルの読み込みに、`readxl`という`package`を使用します。
+
+```{r readfiles}
+# 一度だけインストールが必要
+#install.packages("readxl")
+
+# ライブラリコマンドでの読み込みは毎回必要
+library(readxl)
+
+# 変数の対応関係
+# A1101_総人口【人】	
+# A1301_15歳未満人口【人】
+# A1303_65歳以上人口【人】	
+# B1101_ 総面積（北方地域及び竹島を除く）【ｈａ】	
+# B1103_ 可住地面積【ｈａ】	
+# B4107_ 雪日数（年間）【日】	
+# B4108_ 日照時間（年間）【時間】	
+# D110101_市町村数【‐】	
+# E6102_大学数【校】	
+# E6302_大学学生数【人】
+# F610201_超過実労働時間数（男）【時間】	
+# F610202_超過実労働時間数（女）【時間】	
+# H110202_空き家数【戸】
+
+#自分のパソコンに保存してあるエクセルファイルを読み込む場合は、
+#以下でディレクトリを変更して実行
+#getwd() # 現在の作業ディレクトリを確認
+#setwd("/users/yamamoto/R/ForTeaching") # 作業ディレクトリの変更
+
+#ウェブサイトから直接ダウンロードする場合
+url1<-"https://yamamoto-masashi.github.io/DSlec/20201028sample.xls"
+download.file(url1,destfile="20201028sample.xls") #for Mac
+download.file(url1,destfile="20201028sample.xls",mode="wb") #for Windows
+
+# エクセルファイルの読み込み
+# ヘッダ部分を読み飛ばしている
+# sheet=1を変更することで別のシートも読める
+sampleDB<-readxl::read_excel("20201028sample.xls",skip=5,sheet=1)
+
+# 列１と列２の名前を変更している。
+names(sampleDB)[1:2]<-c("prefcode","prefnameJ")
+
+head(sampleDB)
+
+```
+
+表の変数名の下の`<dbl>`は変数が数値型であることを示しています。
+
+
+```{r readfiles2}
+
+# read_excel()関数で読み込んだ場合は、文字列になっていないので、平均が計算可能。
+
+mean(sampleDB$A1101)
+
+```
+
+
+## 描画系のpackageの例
+
+以下では、例として、[こちら](https://github.com/rossdrucker/sportyR/)から各種スポーツのフィールドやコートを描くpackageをインストールして、実際に描画するデモを示したいと思います。
+
+**注意**：このpackageはグラフ作成の有名`package`である`ggplot2`に依存しているので、以下のコマンドの実行には、`ggplot2`のインストールも必要です。
+
+
+```{r packagedemo2}
+
+# packageのインストールコマンド
+# 以下でsportyRというpackageをインストールしている
+
+#install.packages('sportyR')
+# 以下のコマンドでsportRを呼び出す
+library(sportyR)
+
+library(sportyR)
+
+# Create a 100m by 75m FIFA pitch
+geom_soccer(
+  "fifa",
+  pitch_updates = list(
+    pitch_length = 100,
+    pitch_width = 75
+  )
+)
+
+#NBAのコート
+geom_basketball("nba", display_range = "offense", rotation = 270)
+
+#カーリングのコート
+geom_curling("wcf", display_range = "house")
+
+```
+
+### packageの応用例: 野球
+
+`package`は複雑な作業を関数化してくれているとも言え、便利なものである。さらに複数の`package`を同時に利用することでさらに便利になる場合も多い。以下では`SportyR`で描写したスタジアムにMLBのデータを操作できる`baseballr`という`package`を使って打球の情報を追加してみる。
+
+MLBの公式と思われる[Baseball Savant](https://baseballsavant.mlb.com/)では、StatCastと呼ばれる高性能カメラなどを駆使して記録された試合中の一球ごとのボールの動きがプレイヤーや結果の情報と一緒に公開されている。
+
+以下は2021年と2022年(ただし9月15日まで)の大谷翔平選手のバッテイング記録をプロットしたものである。
+
+
+```{r packagedemo4}
+
+# インストールしていない場合、以下も実行
+#install.packages("baseballr")
+#install.packages("dplyr")
+#install.packages("ggplot2")
+
+library(baseballr)
+library(dplyr)
+library(ggplot2)
+
+#最初に調べたいプレイヤーのIDを探す
+PID<-playerid_lookup("Ohtani")
+
+#これをみると大谷翔平のIDは660271であることがわかる。
+
+Ohtani2021 <- scrape_statcast_savant_batter("2021-04-01",
+                                   "2021-09-30",
+                                batterid = 660271)
+
+#みやすくするためにエラーなどを削除
+events2<- c("single","double","triple","home_run","field_out")
+
+
+# hc_xから125.42を、また、hc_yを198.27から引いているのは打球データの原点をSportyRのホームベースに合わせるためのおまじないで、以下のサイトを参考にして作成した。
+#https://baseballwithr.wordpress.com/2021/04/26/spray-charts-using-the-sportyr-package/
+# また同じサイトを参考にして、単位をfeetに合わせるために2.5をかけている
+
+Ohtani2021 |>
+  filter(hc_x>0 | hc_y>0)|> #見逃したボールを排除するため
+  filter(events %in% events2)|>
+  mutate(location_x = hc_x - 125.42,
+         location_y = 198.27 - hc_y) |>
+  mutate(location_x = 2.5 * (hc_x - 125.42),
+         location_y = 2.5 * (198.27 - hc_y))->OhtaniBatDB2021
+
+geom_baseball(league = "MLB") +
+  geom_point(data=OhtaniBatDB2021,aes(location_x, location_y,
+                 color = events)) +
+ # scale_colour_manual(values =
+ #                c("orange","white", "red","blue","pink")) +
+  ggtitle("Shohei Ohtani Batting - 2021") 
+
+
+#
+# 2022年
+#
+Ohtani2022 <- scrape_statcast_savant_batter("2022-04-01",
+                                   "2022-09-15",
+                                batterid = 660271)
+
+
+Ohtani2022 |>
+  filter(hc_x>0 | hc_y>0)|> #見逃したボールを排除するため
+  filter(events %in% events2)|>
+  mutate(location_x = hc_x - 125.42,
+         location_y = 198.27 - hc_y) |>
+  mutate(location_x = 2.5 * (hc_x - 125.42),
+         location_y = 2.5 * (198.27 - hc_y))->OhtaniBatDB2022
+
+geom_baseball(league = "MLB") +
+  geom_point(data=OhtaniBatDB2022,aes(location_x, location_y,
+                 color = events)) +
+ # scale_colour_manual(values =
+ #                c("orange","white", "red","blue","pink")) +
+  ggtitle("Shohei Ohtani Batting - 2022") 
+
+```
+
+次に大谷選手の投球をみてみよう。
+
+```{r packagedemo5,fig.height = 9}
+
+#カラーパレットの追加
+#install.packages("viridis")
+library(viridis)
+library(RColorBrewer)
+
+OhtaniP2021<-scrape_statcast_savant_pitcher("2021-04-01",
+                                   "2021-09-30",
+                                pitcherid = 660271)
+
+#以下のコードはこのサイトから
+#https://throughthefencebaseball.com/data-analytics-creating-a-pitching-spray-chart-with-rstudio/
+
+##Drawing The Strike Zone
+x <- c(-.95,.95,.95,-.95,-.95)
+z <- c(1.6,1.6,3.5,3.5,1.6)
+
+#store in dataframe
+sz <- data.frame(x,z)
+
+##Changing Pitch Names
+pitch_desc <- OhtaniP2021$pitch_type
+
+##Changing Pitch Names
+pitch_desc[which(pitch_desc=='CH')] <- "Changeup"
+pitch_desc[which(pitch_desc=='CU')] <- "Curveball"
+pitch_desc[which(pitch_desc=='FC')] <- "Cutter"
+pitch_desc[which(pitch_desc=='FF')] <- "Four seam"
+pitch_desc[which(pitch_desc=='FS')] <- "Split Flinger"
+pitch_desc[which(pitch_desc=='FT')] <- "Two-Seam"
+pitch_desc[which(pitch_desc=='KC')] <- "Kuckle-Curve"
+pitch_desc[which(pitch_desc=='SI')] <- "Sinker"
+pitch_desc[which(pitch_desc=='SL')] <- "Slider"
+
+#イニング別
+ggplot() +
+##First plotting the strike zone that we created
+  geom_path(data = sz, aes(x=x, y=z)) +
+  coord_equal() +
+##Now plotting the actual pitches
+  geom_point(data = OhtaniP2021, aes(x = plate_x, y = plate_z, 
+                                          size = release_speed, 
+                                          color = pitch_desc),alpha = 0.5) +
+  scale_size(range = c(-1.0,2.5))+
+  scale_color_brewer(palette="Dark2") +
+  labs(size = "Speed",
+       color = "Pitch Type",
+       title = " Shohei Ohtani: Pitch Chart (2021, inning)") +
+  ylab("Feet Above Homeplate") +
+  xlab("Feet From Homeplate") +
+  theme(plot.title=element_text(face="bold",hjust=-.015,vjust=0,
+                                colour="#3C3C3C",size=20),
+        plot.subtitle=element_text(face="plain", hjust= -.015, vjust= .09,
+                                   colour="#3C3C3C", size = 12)) +
+  theme(axis.text.x=element_text(vjust = .5,size=11,
+                                 colour="#535353",face="bold")) +
+  theme(axis.text.y=element_text(size=11,colour="#535353",face="bold")) +
+  theme(axis.title.y=element_text(size=11,colour="#535353",face="bold",
+                                  vjust=1.5)) +
+  theme(axis.title.x=element_text(size=11,colour="#535353",face="bold",
+                                  vjust=0)) +
+  theme(panel.grid.major.y = element_line(color = "#bad2d4", size = .5)) +
+  theme(panel.grid.major.x = element_line(color = "#bdd2d4", size = .5)) +
+  theme(panel.background = element_rect(fill = "white")) +
+  facet_wrap(~ inning)
+
+
+#カウント別
+ggplot() +
+##First plotting the strike zone that we created
+  geom_path(data = sz, aes(x=x, y=z)) +
+  coord_equal() +
+##Now plotting the actual pitches
+  geom_point(data = OhtaniP2021, aes(x = plate_x, y = plate_z, 
+                                          size = release_speed, 
+                                          color = pitch_desc),alpha = 0.5) +
+  scale_size(range = c(-1.0,2.5))+
+  scale_color_brewer(palette="Dark2") +
+  labs(size = "Speed",
+       color = "Pitch Type",
+       title = " Shohei Ohtani: Pitch Chart (2021, count)") +
+  ylab("Feet Above Homeplate") +
+  xlab("Feet From Homeplate") +
+  theme(plot.title=element_text(face="bold",hjust=-.015,vjust=0,
+                                colour="#3C3C3C",size=20),
+        plot.subtitle=element_text(face="plain", hjust= -.015, vjust= .09,
+                                   colour="#3C3C3C", size = 12)) +
+  theme(axis.text.x=element_text(vjust = .5,size=11,
+                                 colour="#535353",face="bold")) +
+  theme(axis.text.y=element_text(size=11,colour="#535353",face="bold")) +
+  theme(axis.title.y=element_text(size=11,colour="#535353",face="bold",
+                                  vjust=1.5)) +
+  theme(axis.title.x=element_text(size=11,colour="#535353",face="bold",
+                                  vjust=0)) +
+  theme(panel.grid.major.y = element_line(color = "#bad2d4", size = .5)) +
+  theme(panel.grid.major.x = element_line(color = "#bdd2d4", size = .5)) +
+  theme(panel.background = element_rect(fill = "white")) +
+  facet_wrap(~ balls+strikes)
+
+
+```
+
+同様に2022年(9月15日まで)の投球もプロットしてみる。
+
+```{r packagedemo06,fig.height = 9}
+
+
+OhtaniP2022<-scrape_statcast_savant_pitcher("2022-04-01",
+                                   "2022-09-15",
+                                pitcherid = 660271)
+
+##Changing Pitch Names
+pitch_desc <- OhtaniP2022$pitch_type
+
+##Changing Pitch Names
+pitch_desc[which(pitch_desc=='CH')] <- "Changeup"
+pitch_desc[which(pitch_desc=='CU')] <- "Curveball"
+pitch_desc[which(pitch_desc=='FC')] <- "Cutter"
+pitch_desc[which(pitch_desc=='FF')] <- "Four seam"
+pitch_desc[which(pitch_desc=='FS')] <- "Split Flinger"
+pitch_desc[which(pitch_desc=='FT')] <- "Two-Seam"
+pitch_desc[which(pitch_desc=='KC')] <- "Kuckle-Curve"
+pitch_desc[which(pitch_desc=='SI')] <- "Sinker"
+pitch_desc[which(pitch_desc=='SL')] <- "Slider"
+
+#イニング別
+ggplot() +
+##First plotting the strike zone that we created
+  geom_path(data = sz, aes(x=x, y=z)) +
+  coord_equal() +
+##Now plotting the actual pitches
+  geom_point(data = OhtaniP2022, aes(x = plate_x, y = plate_z, 
+                                          size = release_speed, 
+                                          color = pitch_desc),alpha = 0.5) +
+  scale_size(range = c(-1.0,2.5))+
+  scale_color_brewer(palette="Dark2") +
+  labs(size = "Speed",
+       color = "Pitch Type",
+       title = " Shohei Ohtani: Pitch Chart (2022, inning)") +
+  ylab("Feet Above Homeplate") +
+  xlab("Feet From Homeplate") +
+  theme(plot.title=element_text(face="bold",hjust=-.015,vjust=0,
+                                colour="#3C3C3C",size=20),
+        plot.subtitle=element_text(face="plain", hjust= -.015, vjust= .09,
+                                   colour="#3C3C3C", size = 12)) +
+  theme(axis.text.x=element_text(vjust = .5,size=11,
+                                 colour="#535353",face="bold")) +
+  theme(axis.text.y=element_text(size=11,colour="#535353",face="bold")) +
+  theme(axis.title.y=element_text(size=11,colour="#535353",face="bold",
+                                  vjust=1.5)) +
+  theme(axis.title.x=element_text(size=11,colour="#535353",face="bold",
+                                  vjust=0)) +
+  theme(panel.grid.major.y = element_line(color = "#bad2d4", size = .5)) +
+  theme(panel.grid.major.x = element_line(color = "#bdd2d4", size = .5)) +
+  theme(panel.background = element_rect(fill = "white")) +
+  facet_wrap(~ inning)
+
+
+#カウント別
+ggplot() +
+##First plotting the strike zone that we created
+  geom_path(data = sz, aes(x=x, y=z)) +
+  coord_equal() +
+##Now plotting the actual pitches
+  geom_point(data = OhtaniP2022, aes(x = plate_x, y = plate_z, 
+                                          size = release_speed, 
+                                          color = pitch_desc),alpha = 0.5) +
+  scale_size(range = c(-1.0,2.5))+
+  scale_color_brewer(palette="Dark2") +
+  labs(size = "Speed",
+       color = "Pitch Type",
+       title = " Shohei Ohtani: Pitch Chart (2022, count)") +
+  ylab("Feet Above Homeplate") +
+  xlab("Feet From Homeplate") +
+  theme(plot.title=element_text(face="bold",hjust=-.015,vjust=0,
+                                colour="#3C3C3C",size=20),
+        plot.subtitle=element_text(face="plain", hjust= -.015, vjust= .09,
+                                   colour="#3C3C3C", size = 12)) +
+  theme(axis.text.x=element_text(vjust = .5,size=11,
+                                 colour="#535353",face="bold")) +
+  theme(axis.text.y=element_text(size=11,colour="#535353",face="bold")) +
+  theme(axis.title.y=element_text(size=11,colour="#535353",face="bold",
+                                  vjust=1.5)) +
+  theme(axis.title.x=element_text(size=11,colour="#535353",face="bold",
+                                  vjust=0)) +
+  theme(panel.grid.major.y = element_line(color = "#bad2d4", size = .5)) +
+  theme(panel.grid.major.x = element_line(color = "#bdd2d4", size = .5)) +
+  theme(panel.background = element_rect(fill = "white")) +
+  facet_wrap(~ balls+strikes)
+
+
+```
+
+### packageの応用例：バスケ
+
+2021-2022シーズンのNBAトロントラプターズのshort chartを作ってみよう。NBAはAPIでデータを公開しているようで、`nbastatR`というパッケージでダウンロードできる。`nbastatR`の詳細は[ここ](https://www.rdocumentation.org/packages/nbastatR/versions/0.1.110202031)で確認できる(英語)。
+
+```{r packageNBA1, warning=FALSE, message=FALSE}
+
+Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
+
+# install.packages("devtools")
+library(devtools)
+# devtools::install_github("abresler/nbastatR")
+library(nbastatR)
+# devtools::install_github("lbenz730/ncaahoopR")
+library(ncaahoopR)
+
+
+TOR <- teams_shots(teams = "Toronto Raptors",seasons = 2022)
+
+
+# 以下のYouTubeより
+# https://www.youtube.com/watch?v=ZQ8fqSnvWcc
+TOR$locationX<-TOR$locationX/10
+TOR$locationY<-TOR$locationY/10-41.75
+
+# NBAのコート
+
+geom_basketball(league = "nba", display_range = "offense", 
+                x_trans = 0,
+                y_trans=0,
+                rotation = 270) +
+  geom_point(data=TOR,aes(locationX, locationY,
+                 color = isShotMade)) +
+ # scale_colour_manual(values =
+ #                c("orange","white", "red","blue","pink")) +
+  ggtitle("Shot Chart - Toronto Raptors (2021-2022)") 
+
+```
+
+
+次にこのシーズンにトロントラプターズでプレイした渡邊雄太選手のshot chartを作ってみよう。
+
+```{r packageNBA2}
+TOR |>
+  filter(namePlayer=="Yuta Watanabe")->TOR_YW
+
+geom_basketball(league = "nba", display_range = "offense", 
+                x_trans = 0,
+                y_trans=0,
+                rotation = 270) +
+  geom_point(data=TOR_YW,aes(locationX, locationY,
+                 color = isShotMade)) +
+  ggtitle("Shot Chart - Toronto Raptors (Yuta Watanabe, 2021-2022)") 
+  
+
+```
+

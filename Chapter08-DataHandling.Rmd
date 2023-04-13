@@ -1,0 +1,200 @@
+#  dplyrによるデータ集計
+
+## はじめに
+
+データ分析にかかる時間の大半は、分析目的に合わせてデータをキレイに整える段階に費やされます。`R`の`dplyr`という`package`を用いて、少しでも楽にデータ集計を進めるためのコツを学びます。
+
+一定の時間が経過した後に見直しをすると、クリック操作で行った手続きを思い出すことは不可能です。できるだけ`R`の環境の中でデータの整理を行うことでデータ整理自体の時間節約になるだけでなく、`dplyr`コマンドとして作業を記録しておくことで、過去の自分が何をしたかを思い出す時間も節約することができます。
+
+また、詳しい説明として宋・矢内の「私たちのR ベストプラクティスの探求」(https://www.jaysong.net/RBook/)というサイトが非常に参考になる。
+
+```{r dplyrIntro1}
+
+#install.packages("dplyr")
+
+library(dplyr)
+library(ggplot2)
+
+head(midwest)
+
+```
+
+
+## パイプ演算子について
+
+パイプ演算子とは`%>%`のことで、`dplyr`を読み込むことで使用できます。パイプ演算子は、パイプの左側のオブジェクトを右側に「流す」ことができます。最初は直感的にわかりにくいかもしれませんが、これによって、以下のようなメリットが生まれます。
+
+1. 集計の途中で無駄なデータフレームを作る必要がない。
+2. コードが簡素化され、見やすくなる。
+3. 改行が入るので、コメントを残しやすい。
+
+一方、デメリットとしては、たまにパイプ演算子を使うとうまく機能させられない関数がありますが、入門の段階ではそのような現象はほとんどなく、導入のメリットしかないと思いますので、積極的に活用ですべきと考えます。
+
+
+```{r dplyrIntro2}
+
+# パイプ演算子を用いた場合
+midwest %>%
+  ggplot()+geom_histogram(aes(poptotal))
+
+# パイプ演算子を用いない場合
+
+ggplot(midwest)+geom_histogram(data=midwest,aes(poptotal))
+
+# パイプ演算子で他の演算も行う
+midwest %>%
+  filter(state=="MI") %>% # 対象をミシガン州だけに
+  ggplot()+geom_histogram(aes(poptotal))
+
+# パイプ演算子を用いないで、他の演算も行う
+
+midwestMI<-filter(midwest, state=="MI")
+
+ggplot(midwestMI)+geom_histogram(aes(poptotal)) 
+
+```
+
+
+最後の例では結果として２行になり、`midwestMI`というデータフレームも作成された。
+
+
+
+## エクセル作業を代替してみる
+
+エクセルでクリックで行う作業をコードで残そう。演習に使うデータとして、[総務省統計局による家計調査](https://www.stat.go.jp/data/kakei/)を使用する。
+
+>　家計調査は標本調査であり，層化3段抽出法（第1段―市町村，第2段―単位区，第3段―世帯）により世帯を選定している。選定にあたっては特定の世帯が続けて調査の対象にならないように配慮している。市町村の抽出の仕方は次のとおりである。都道府県庁所在市及び政令指定都市については各市を1層とし52層に分けた。その他の人口5万以上の市については直近の国勢調査の結果に基づき，地方，都市階級に分けた後，
+
+> 1. 人口集中地区人口比率
+> 2. 人口増減率
+> 3. 産業的特色
+> 4. 世帯主の年齢構成
+
+> を考慮して74層に分けた。また，人口5万未満の市及び町村は，地方で分けた後，(1)地理的位置（海沿い，山地等），(2)世帯主の年齢構成を用いて，計42層に分けた。このようにして分けられた全国計168層の各層から1市町村ずつ抽出した。
+
+
+| 地域 | 調査市町村数 | 二人以上の調査世帯数 | 単身調査世帯数 |
+|:----------|-----:|----------------:|-----:|------:|
+|全国 |	168 |	8,076 |	673 |
+|都道府県庁所在市及び大都市 |	52 |	5,472 |	456 |
+|人口5万以上の市（上記の市を除く）| 	74 |	2,100 |	175 |
+|人口5万未満の市及び町村 | 42 |	504 |	42 |
+
+
+```{r dplyrIntro3}
+
+library(readxl)
+
+#ウェブサイトから直接ダウンロードする場合
+url1<-"https://yamamoto-masashi.github.io/DSlec/kakei2000.xlsx"
+download.file(url1,destfile="kakei2000.xlsx",mode="wb")
+
+# エクセルファイルの読み込み
+# sheet=1を変更することで別のシートも読める
+kakeiDB<-readxl::read_excel("kakei2000.xlsx",sheet=1)
+```
+
+データベースの列を増減する。`mutate()`関数で新しい変数を加えることができます。`select()`関数はデータフレームに維持する変数名を指定して任意の大きさのデータフレームに変更できます。以下の例では変数名に「-」(マイナス)をつけることで指定した変数だけを除外したデータフレームを作成しています。
+
+```{r dplyrIntro4}
+# 列の追加 
+
+kakeiDB %>%
+  dplyr::rowwise() %>%
+  mutate(rSum1920=sum(FY2019, FY2020)) ->kakeiDB
+
+head(kakeiDB)
+
+# 列の削除
+
+kakeiDB %>%
+  select(-rSum1920) -> kakeiDB
+
+head(kakeiDB)
+
+```
+
+
+`filter()`関数を使って条件をつけてデータベースの行を絞り込む。
+
+
+```{r dplyrIntro5}
+
+# 魚介類だけを取り出す
+kakeiDB %>%
+  filter(Category2==11)->Cat2_11
+
+print(Cat2_11)
+```
+
+
+`group_by()`関数を使ってグループに分けて計算する。今回は`summarize()`関数を使って最大値を計算しています。
+
+```{r dplyrIntro6}
+
+#2000年の消費（大分類）
+kakeiDB %>%
+  group_by(Category1J) %>%
+  summarize(max2000=max(FY2000/1000)) %>%
+  ggplot()+
+  #theme_gray (base_family = "HiraKakuPro-W3")+
+  theme_gray()+
+  coord_flip()+
+  geom_bar(aes(x = Category1J, y = max2000),
+           stat = "identity",fill="orange")+
+  xlab("")+ylab("大分類の最大値(2000年, 単位：千円/年)")+
+  ggtitle("家計調査による消費支出（名目値）")
+
+#2020年の消費（大分類）
+kakeiDB %>%
+  group_by(Category1J) %>%
+  summarize(max2020=max(FY2020/1000)) %>%
+  ggplot()+
+  #theme_gray (base_family = "HiraKakuPro-W3")+
+  theme_gray()+
+  coord_flip()+
+  geom_bar(aes(x = Category1J, y = max2020),
+           stat = "identity",fill="lightblue")+
+  xlab("")+ylab("大分類の最大値(2020年, 単位：千円/年)")+
+  ggtitle("家計調査による消費支出（名目値）")
+```
+
+
+二つ以上のデータベースを結合する
+
+```{r dplyrIntro7}
+
+#2020年のセリーグの成績
+teamnameJ<-c("巨人", "阪神", "中日","DeNA", "広島", "ヤクルト")
+win2020<-c(67,60,56,58,52,41)
+lose2020<-c(45,53,55,58,56,69)
+pct2020<-c(0.598,0.531,0.522,0.491,0.481,0.373)
+
+Cen2020<-as.data.frame(cbind(teamnameJ,win2020,lose2020,pct2020))
+
+print(Cen2020)
+
+#2001年のセリーグの成績
+teamnameJ<-c("ヤクルト", "巨人", "DeNA", "広島", "中日","阪神")
+win2001<-c(76,75,69,68,62,57)
+lose2001<-c(58,63,67,65,74,80)
+pct2001<-c(0.567,0.543,0.507,0.511,0.456,0.416)
+
+Cen2001<-as.data.frame(cbind(teamnameJ,win2001,lose2001,pct2001))
+
+print(Cen2001)
+
+# 二つの記録を結合する
+
+#left_join(A,B)関数はAにBを結合する
+Cen20012020<-left_join(Cen2001,Cen2020,by="teamnameJ")
+
+print(Cen20012020)
+
+Cen20202001<-left_join(Cen2020,Cen2001,by="teamnameJ")
+
+print(Cen20202001)
+
+```
+
+

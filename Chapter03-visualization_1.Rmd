@@ -1,0 +1,397 @@
+# 可視化(1)：ggplot2によるグラフ作成
+
+`R`を使用することの大きなメリットの一つが多彩なグラフィック機能です。グラフなどを用いて、データを可視化することで自分の分析対象をより深く理解できるようになります。
+
+## 可視化の重要性
+
+はじめにサンプルデータを用いて、可視化の持つ意味について考えます。
+
+```{r vis1, warning=FALSE, message=FALSE}
+
+# install.packages("datasets")
+library(datasets)
+
+print(anscombe)
+
+```
+
+このデータ例は、統計学者のフランク・アンスコムが1973年に紹介した例です。この例では、$x$ の平均(`=mean`)は$9$、$x$ の標準偏差(`=sd`)は$3.32$、$y$の平均が$7.50$ (小数第2位まで一致)、$y$の標準偏差が	$2.03$ (小数第3位まで一致)、と等しくなっています。
+
+```{r vis2, warning=FALSE, message=FALSE}
+
+# 記述統計を出力するためのpackage
+# include.packages("psych)
+
+library(psych)
+descriptive_statistics<-describe(anscombe,skew = FALSE, ranges = FALSE)
+
+print(descriptive_statistics)
+```
+
+また、$x_i$と$y_i$の間の相関係数も少数第３位で四捨五入して$0.82$と一致しています。
+
+$$
+r = \frac{\frac{1}{n}\sum_{i=1}^{n}(x_{i}-\overline{x})(y_{i}-\overline{y})}{\sqrt{\frac{1}{n}\sum_{i=1}^{n}(x_{i}-\overline{x})^{2}}\sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_{i}-\overline{y})^{2}}} = \frac{s_{xy}}{s_{x}s_{y}}
+$$
+
+```{r vis3}
+
+#x1とy1の相関係数
+x1y1<-cor(anscombe$x1,anscombe$y1)
+
+x2y2<-cor(anscombe$x2,anscombe$y2)
+
+x3y3<-cor(anscombe$x3,anscombe$y3)
+
+x4y4<-cor(anscombe$x4,anscombe$y4)
+
+options(digits=2)   # 表示桁数を小数点第２位までに変える
+print(c(x1y1,x2y2,x3y3,x4y4))
+
+```
+
+ところが、このデータをプロットしてみると以下のようになります (描画に用いた`ggplot2`の解説はこの後に行います)。
+
+```{r vis4}
+library(ggplot2)
+# 4組のグラフを作成する
+plotx1y1<-ggplot(anscombe)+geom_point(aes(x=x1,y=y1),size=3)+
+  xlim(2.5,20)+ylim(2.5,12.9)+ggtitle("Set 1")
+
+plotx2y2<-ggplot(anscombe)+geom_point(aes(x=x2,y=y2),size=3)+
+  xlim(2.5,20)+ylim(2.5,12.9)+ggtitle("Set 2")
+
+plotx3y3<-ggplot(anscombe)+geom_point(aes(x=x3,y=y3),size=3)+
+  xlim(2.5,20)+ylim(2.5,12.9)+ggtitle("Set 3")
+
+plotx4y4<-ggplot(anscombe)+geom_point(aes(x=x4,y=y4),size=3)+
+  xlim(2.5,20)+ylim(2.5,12.9)+ggtitle("Set 4")
+
+# このpackageでグラフを組み合わせる
+#install.packages("patchwork")
+library(patchwork)
+
+plotx1y1 + plotx2y2 +plotx3y3+plotx4y4+ 
+  plot_layout(ncol = 2, heights = c(5, 4))
+
+```
+
+このように全く異なるデータの分布をしていることがわかります。要約統計量だけをみて判断せずに常にグラフにデータをプロットしてみることが重要です。
+
+
+## Rによる可視化のデモ
+
+コマンドラインで図を作成することははじめは面倒に思うかもしれません。しかし、どのようなグラフを作成するかを一つ一つ命令に書きますので、一度作成してしまえばコピーペーストで簡単に複製することができます。ところがクリックベースでグラフを作成した場合、完成したグラフをコピーしたとしても必ずしも元のグラフと同じにはなりません。ズレた場合にも目測で直す必要があります。
+
+`R`による可視化の例を公式デモにて確認します。
+
+```{r graphicdemo}
+
+demo(graphics)
+
+```
+## ggplot2の考え方
+
+`ggplot2`は、`R`の中で最もポピュラーな描画packageです。最初は戸惑うかもしれませんが、論理でグラフを作る面白さを一緒に体験しましょう。
+
+`ggplot2`はグラフを特定のパーツに分けてレイヤーとして作成し、それらを重ねて表現していきます。コマンドとしてはそれぞれのレイヤーを「足し算する」形でグラフを完成していきます。
+
+下の例は最初のコマンドで、`ggplot(A,aes(x=B,y=C))`で、`A`というデータセットを使って、x軸に`B`、y軸に`C`を使うグラフの基礎となるレイヤーを作ってね、という命令になります。
+
+```{r ggplotintro1}
+# install.packages("ggplot2")
+
+library(ggplot2)
+
+# データフレームの表示
+head(midwest)
+```
+
+`midewest`は`ggplot2`に付属しているデータベースで、アメリカ中西部の５つの州(IL, IN, MI, OH,WI)のサンプルデータが保存してあります。
+
+```{r ggplotintro2}
+
+ggplot(data=midwest, aes(x=percollege,y=percadultpoverty))
+
+```
+
+結果は上記のようになります。この例では、横軸が各カウンティの大卒割合、縦軸が、貧困割合を示しています。
+
+データそのものは、どうやってプロットするか、を命令しないと描かれません。どうやってとは、棒グラフにするのか、折れ線グラフにするのか、円グラフにするのか、といった見た目の問題です。このどうやっての部分は、`geom_XXX()`という関数群で指定します。例えば、散布図を作成する場合は、`geom_point()`となります。
+
+```{R ggplotintro3a}
+
+ggplot(data=midwest)+
+  geom_point(aes(x=percollege,y=percadultpoverty))
+
+```
+
+デフォルトでは、軸の名称に変数の名前が入るので、これをわかりやすい文言に変更してみましょう。また、タイトルも加えてみます。
+
+
+```{r ggplot3b}
+
+ggplot(data=midwest)+
+  geom_point(aes(x=percollege,y=percadultpoverty))+
+  #theme_gray (base_family = "HiraKakuPro-W3")+ # 日本語表示のために必要, Windowsユーザーは指定しない
+  theme_gray()+
+  xlab("各カウンティにおける大卒の割合 (%)")+
+  ylab("貧困の割合 (%)")+
+  ggtitle("アメリカ中西部５州の現状")
+
+
+```
+
+
+`geom_point()`の`aes()`で`color=XXX`と設定することで`XXX`変数を用いて色分けをすることができます。`state`という変数で州の名前が格納されているので、この情報を使って州別に色分けしてみましょう。
+
+```{R ggplotintro3c}
+
+ggplot(data=midwest)+
+  geom_point(aes(x=percollege,y=percadultpoverty,color=state))+
+  #theme_gray (base_family = "HiraKakuPro-W3")+ # 日本語表示のために必要, Windowsユーザーは指定しない
+  theme_gray()+
+  xlab("各カウンティにおける大卒の割合 (%)")+
+  ylab("貧困の割合 (%)")+
+  ggtitle("アメリカ中西部５州の現状")
+
+```
+
+あるいは`facet_grid()`関数で州別に分割することも可能です。
+
+```{r ggplotintro4}
+
+# 横方向への分割
+ggplot(data=midwest)+
+  geom_point(aes(x=percollege,y=percadultpoverty))+
+  facet_grid(. ~ state)+ # stateでグラフを分割 (横方向)
+  #theme_gray (base_family = "HiraKakuPro-W3")+ # 日本語表示のために必要
+  theme_gray()+
+  xlab("各カウンティにおける大卒の割合 (%)")+
+  ylab("貧困の割合 (%)")+
+  ggtitle("アメリカ中西部５州の現状")
+
+
+# 縦方向への分割
+ggplot(data=midwest)+
+  geom_point(aes(x=percollege,y=percadultpoverty))+
+  facet_grid(state ~.)+ # stateでグラフを分割 (縦方向)
+  #theme_gray (base_family = "HiraKakuPro-W3")+ # 日本語表示のために必要
+  theme_gray()+
+  xlab("各カウンティにおける大卒の割合 (%)")+
+  ylab("貧困の割合 (%)")+
+  ggtitle("アメリカ中西部５州の現状")
+
+```
+
+
+代表的な`geom_XXX`関数は以下の通りです。
+
+
+|関数名 | 内容 |
+|:-------------:|:--------------------------:|
+| `geom_point()` | 散布図のように点を描画 |
+| `geom_line()` | 折れ線グラフを描画 |
+| `geom_smooth()` | データのトレンド線を描画 |
+|`geom_col()` | 棒グラフの描画 | 
+|`geom_polygon()` | 長方形など任意の形状のオブジェクトの描画 | 
+|`geom_sf()` | 空間情報を持つオブジェクトの描画 | 
+
+
+例えば、棒グラフは以下のように描写できる。
+
+```{r ggplotintro4b}
+
+ggplot(midwest)+
+  geom_col(aes(x=state,y=poptotal))+
+  #theme_gray (base_family = "HiraKakuPro-W3")+ # 日本語表示のために必要
+  theme_gray()+
+  xlab("州名")+ylab("州全体の人口")
+  
+```
+
+データでは、各州のカウンティレベルでの人口が入っているが自動的に合計されていることに注意。
+
+人口の軸表示がe+06などとなっていますが、これは学術的な標記で$10^6$を意味しています。これをより一般にわかりやすい標記に変更します。
+
+ここでは、`scales`というpackageの`label_number()`関数を使って変更していますが、元のデータの単位を変更する(=1,000,000で割るなど)しても同じです。
+
+また、もう一つの機能として軸を入れ替える`coord_flip()`関数も紹介しています。
+
+```{r ggplotintro5}
+
+#install.packages("scales")
+library(scales)
+
+ggplot(midwest)+
+  geom_col(aes(x=state,y=poptotal))+
+  #theme_gray (base_family = "HiraKakuPro-W3")+ # 日本語表示のために必要
+  theme_gray()+
+  scale_y_continuous(labels = label_number(suffix = "", scale = 1e-6))+
+  xlab("州名")+ylab("州全体の人口 (単位：百万人)")+
+  coord_flip()
+  
+```
+
+`label_number()`関数の`suffix`というオプションは添字という意味で上の例では空欄としていますが任意の文字列を入れることも可能です。例えば百万を意味するmillionから頭文字をとって、`M`を追記することが可能です。
+
+また、`fill="XXX`でグラフの色を変更しました。`aes()`の外で設定している点に注意してください。
+
+```{r ggplotintro6}
+
+#install.packages("scales")
+library(scales)
+
+ggplot(midwest)+
+  geom_col(aes(x=state,y=poptotal), fill="royalblue")+
+  #theme_gray (base_family = "HiraKakuPro-W3")+ # 日本語表示のために必要
+  theme_gray()+
+  scale_y_continuous(labels = label_number(suffix = " M", scale = 1e-6))+
+  xlab("州名")+ylab("州全体の人口")+
+  coord_flip()
+  
+```
+
+`aes()`の中で`fill=XXX`を実行した場合、`XXX`の値によって色分けをすることができます。以下の例では、`inmetro`という変数で色分けをしています。この変数は、あるカウンティがmetro areaに属していれば１、そうでなければ０をとる変数です。このような変数をダミー変数と呼びます。metro areaは日本でいう人口密度が一定以上のエリアのことで、いわゆる都市化されているエリアと考えてもらえれば良いと思います。
+
+```{r ggplotintro7}
+
+ggplot(midwest)+
+  geom_col(aes(x=state,y=poptotal,fill=factor(inmetro)))+
+  #theme_gray (base_family = "HiraKakuPro-W3")+ # 日本語表示のために必要
+  theme_gray()+
+  scale_y_continuous(labels = label_number(suffix = "", scale = 1e-6))+
+  xlab("州名")+ylab("州全体の人口 (単位：百万人)")+
+  labs(fill="metro areaダミー") # 凡例のタイトルを変更している
+  
+```
+
+`ggplot2`には数多くの機能があります。そしてこの機能は日々進化しています。もし、グラフをこのように変更したい、というアイディアが何かあったらまずはgoogle検索してみてください。最初は適切な検索ワードが見つけられずに苦労するかもしれませんが、慣れてくるとかなりの確率で答えが見つかると思います。場合によっては、自分がイメージしていた可視化よりも優れたアイディアに出会えることもあると思います。
+
+最終的なアウトプットの完成度を高めることが最初の目標ですが、その後はその過程の効率化にも目を向けてみてください。自分のスタイルを確立することができたら、それに至る時間を短縮するための様々な方法が`ggplot2`あるいは`R`には用意されています。
+
+
+## ggplot2の事例
+
+以下は、[このサイト](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html)から引用した例です。講義では触れませんが、使いたいものがあれば是非試してみてください。
+
+
+### バブルチャート
+```{r ggplotExample1}
+
+#Source:http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
+
+data(mpg, package="ggplot2")
+# mpg <- read.csv("http://goo.gl/uEeRGu")
+
+mpg_select <- mpg[mpg$manufacturer %in% c("audi", "ford", "honda", "hyundai"), ]
+
+# Scatterplot
+theme_set(theme_bw())  # pre-set the bw theme.
+g <- ggplot(mpg_select, aes(displ, cty)) + 
+  labs(subtitle="mpg: Displacement vs City Mileage",
+       title="Bubble chart")
+
+g + geom_jitter(aes(col=manufacturer, size=hwy)) + 
+  geom_smooth(aes(col=manufacturer), method="lm", se=F)
+
+```
+
+### ロリポップチャート
+
+```{r ggplotExample2}
+
+#Source:http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
+
+theme_set(theme_bw())
+
+# Prepare data: group mean city mileage by manufacturer.
+cty_mpg <- aggregate(mpg$cty, by=list(mpg$manufacturer), FUN=mean)  # aggregate
+colnames(cty_mpg) <- c("make", "mileage")  # change column names
+cty_mpg <- cty_mpg[order(cty_mpg$mileage), ]  # sort
+cty_mpg$make <- factor(cty_mpg$make, levels = cty_mpg$make)  # to retain the order in plot.
+head(cty_mpg, 4)
+
+# Plot
+ggplot(cty_mpg, aes(x=make, y=mileage)) + 
+  geom_point(size=3) + 
+  geom_segment(aes(x=make, 
+                   xend=make, 
+                   y=0, 
+                   yend=mileage)) + 
+  labs(title="Lollipop Chart", 
+       subtitle="Make Vs Avg. Mileage", 
+       caption="source: mpg") + 
+  theme(axis.text.x = element_text(angle=65, vjust=0.6))
+```
+
+
+### ヒストグラム
+
+```{r ggplotExample3}
+
+#Source:http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
+
+theme_set(theme_classic())
+
+# Histogram on a Continuous (Numeric) Variable
+g <- ggplot(mpg, aes(displ)) + scale_fill_brewer(palette = "Spectral")
+
+g + geom_histogram(aes(fill=class), 
+                   binwidth = .1, 
+                   col="black", 
+                   size=.1) +  # change binwidth
+  labs(title="Histogram with Auto Binning", 
+       subtitle="Engine Displacement across Vehicle Classes")  
+
+g + geom_histogram(aes(fill=class), 
+                   bins=5, 
+                   col="black", 
+                   size=.1) +   # change number of bins
+  labs(title="Histogram with Fixed Bins", 
+       subtitle="Engine Displacement across Vehicle Classes") 
+
+```
+
+### ボックスプロット
+
+```{r ggplotExample4}
+
+#Source:http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
+
+theme_set(theme_bw())
+
+# plot
+g <- ggplot(mpg, aes(manufacturer, cty))
+g + geom_boxplot() + 
+  geom_dotplot(binaxis='y', 
+               stackdir='center', 
+               dotsize = .5, 
+               fill="red") +
+  theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
+  labs(title="Box plot + Dot plot", 
+       subtitle="City Mileage vs Class: Each dot represents 1 row in source data",
+       caption="Source: mpg",
+       x="Class of Vehicle",
+       y="City Mileage")
+```
+
+### 時系列データ
+
+```{r ggplotExample5}
+
+#Source:http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
+
+#install.packages("forecast")
+library(forecast)
+theme_set(theme_classic())
+
+# Subset data
+nottem_small <- window(nottem, start=c(1920, 1), end=c(1925, 12))  # subset a smaller timewindow
+
+# Plot
+ggseasonplot(AirPassengers) + labs(title="Seasonal plot: International Airline Passengers")
+ggseasonplot(nottem_small) + labs(title="Seasonal plot: Air temperatures at Nottingham Castle")
+```
+
+インターネットで検索すると、ggplot2の使い方はたくさん出てきます。以下にまとまって学習できるサイトの例をリンクしておきます。個々の問題もほとんどネットで解決できます。検索のコツをつかむまでが大変ですが、エラーメッセージをコピペして検索することから始めると良いと思います。

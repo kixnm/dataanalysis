@@ -1,0 +1,547 @@
+# 可視化(2)：ggplot2による地図作成
+
+空間的な広がりのあるデータを扱う際には、地図による可視化がデータの特徴を理解する上で大きな助けになります。グラフ描画に用いた`ggplot2`を拡張することで様々な地図データを描画できることは`R`の魅力の一つです。
+
+地図を使った描画には、位置情報の正確さをそれほど必要としない場合と地理的情報の精度が極めて情報な場合の２通りが考えられます。前者は、コロプレス図と呼ばれるいわゆる「白地図の塗り分け」のようなものが相当します。後者は、GISと呼ばれる地理情報科学の分野に近いケースで、「迷惑施設が県境付近に立地しやすい」という仮説を検証するなど、正確な地理情報が前提となる場合です。
+
+## パレットの追加
+
+`R`の中で簡単に追加できる色の組み合わせを提供している`package`に`RColorBrewer`があります。慣れてきたらこのカラーパレットを参考にして色を変えてみても良いでしょう。
+
+```{r colorbrewer, fig.height = 9}
+# install.packages("RColorBrewer")
+
+library(RColorBrewer)
+
+display.brewer.all()
+
+```
+
+
+## 塗り分け地図の作成
+
+はじめに日本の塗り分け地図をなるべく簡単に作成する方法を学びます。`NipponMap`という`package`では見やすさを重視して、海岸線など一部を単純化しています。都道府県別の塗り分けなどは地理情報の精度よりも見やすさを優先すべきです。
+
+なお、`left_join`関数は、`left_join(A,B, by="C")`であるとき、Cという列をキーにして、AにBの情報を追加する関数です。
+
+```{r map1}
+
+#一回だけ以下のインストールが必要
+#install.packages(c("NipponMap", "tidyverse"))
+
+# ライブラリコマンドでの読み込みは毎回必要
+library(readxl)
+library(NipponMap)
+library(sf)
+library(tidyverse)
+
+#ウェブサイトから直接ダウンロードする場合
+url1<-"https://yamamoto-masashi.github.io/DSlec/20201028sample.xls"
+#download.file(url1,destfile="20201028sample.xls")
+download.file(url1,destfile="20201028sample.xls",mode="wb")
+
+# エクセルファイルの読み込み
+# ヘッダ部分を読み飛ばしている
+# sheet=1を変更することで別のシートも読める
+sampleDB<-readxl::read_excel("20201028sample.xls",skip=5,sheet=1)
+
+# 変数の対応関係
+# A1101_総人口【人】	
+# A1301_15歳未満人口【人】
+# A1303_65歳以上人口【人】	
+# B1101_ 総面積（北方地域及び竹島を除く）【ｈａ】	
+# B1103_ 可住地面積【ｈａ】	
+# B4107_ 雪日数（年間）【日】	
+# B4108_ 日照時間（年間）【時間】	
+# D110101_市町村数【‐】	
+# E6102_大学数【校】	
+# E6302_大学学生数【人】
+# F610201_超過実労働時間数（男）【時間】	
+# F610202_超過実労働時間数（女）【時間】	
+# H110202_空き家数【戸】
+
+# 列１と列２の名前を変更している。
+names(sampleDB)[1:2]<-c("prefcode","prefnameJ")
+
+# データと地図を結合する際にキーの型が同じ必要があるので
+# 数値型を文字型に変更している。
+sampleDB$prefcode<-as.character(sampleDB$prefcode)
+
+# 地図の情報はNipponMapから取り出しています。
+# この方法は以下で教えていただきました。
+# https://ill-identified.hatenablog.com/entry/2020/12/07/134705
+Nippon_map <- read_sf(system.file("shapes/jpn.shp", package = "NipponMap")[1],
+               crs = "+proj=longlat +datum=WGS84")
+
+# 地図情報に総務省のデータベースを接続
+mapDB<-left_join(Nippon_map,sampleDB, by=c("SP_ID"="prefcode"))
+
+# 地図にプロット
+ggplot(mapDB, aes(fill = B4107)) + 
+  geom_sf() + 
+  scale_fill_gradientn(colors=brewer.pal(9,"GnBu"))+
+  #theme_gray (base_family = "HiraKakuPro-W3")+
+  theme_gray()+
+  labs(fill = "年間雪日数(日)")+
+  ggtitle("都道府県別の雪日数 (2018年)")
+
+```
+
+スペースの都合や見やすさという点で北海道と沖縄県を移動する場合があります。そのような地図も`R`で作成することができます。なお、この作図は「[ジオメトリの移動による日本地図の可視化](https://shinichiro-iwata.github.io/geospatial-data-visualization/pld3-visualization.html)」を参考にして作成しました。
+
+`annotate()`関数を使って、始点と終点を与えることで線を引くことができるので、その機能を使って、北海道と沖縄県を区別する線を加えます。
+
+```{r map2}
+
+#ジオメトリの直接変更
+#北海道の都道府県番号は１、沖縄県は47。
+Nippon_map$geometry[1]=Nippon_map$geometry[1]+c(-11, -4) 
+Nippon_map$geometry[47]=Nippon_map$geometry[47]+c(12, 5) 
+
+#日本地図の描写
+ggplot()+ 
+  geom_sf(data=Nippon_map, aes(fill=population/10000))+
+  scale_fill_gradientn(colors=brewer.pal(9,"GnBu"))+
+  annotate("segment", x=129, xend=134.2, y=37, yend=37,
+            color="gray", size=1)+
+  annotate("segment", x=134.2, xend=138.5, y=37, yend=41,
+           color="gray", size=1)+
+  annotate("segment", x=139.8, xend=141, y=32.2, yend=32.2,
+            color="gray", size=1)+
+  annotate("segment", x=138.5, xend=139.8, y=31, yend=32.2,
+           color="gray", size=1)+
+  labs(fill="万人", x="", y="",
+       caption="Nippomap")+
+  ggtitle("都道府県別人口")+
+  #theme_bw(base_family = "HiraKakuPro-W3")
+  theme_gray()
+
+```
+
+
+
+## よりGISライクな地図の作成
+
+以下では地理情報をできるだけ正確に扱った地図の描画について解説します。例として用いるデータは、2020年国勢調査の平塚市（小地域）です。このファイルは、
+
+[総務省統計局](https://www.e-stat.go.jp/gis/statmap-search?type=2) >> 小地域 >> 国勢調査 >> 2020年 小地域 >>　世界測地系緯度経度・Shapefile >> 神奈川県 >> 平塚市
+
+でダウンロードできます。
+
+地図情報のうち、ベクターデータは、シェープファイルという形式で利用することがデフォルトになっています。シェープファイルとは、[Esri社](https://www.esrij.com/gis-guide/esri-dataformat/shapefile/)が開発したGIS用のデータフォーマットで、ポイントデータ(1組以上の緯度、経度情報)、ラインデータ(2組のポイントデータを結んだものの集まり)、ポリゴンデータ(ラインデータを結んだもの)を格納できます。
+
+シェープファイルの拡張子は、`.shp`ですが、シェープファイルはこのファイル単独では動作しません。データをダウンロードするときはついてくる複数のファイル（最低でも３つはある）を全て同じフォルダに保存するようにしてください。
+
+```{r GISlike1, warning=FALSE, message=FALSE}
+library(sf)
+
+map <- read_sf("Hiratsuka/r2ka14203.shp",
+               crs = "+proj=longlat +datum=WGS84") # 平塚市のシェープファイル
+
+ggplot(map) + geom_sf()
+
+```
+
+各町丁・字等別の人口で塗り分けをしてみましょう。
+
+```{r GISlike2, warning=FALSE, message=FALSE}
+
+ggplot(map) + geom_sf(aes(fill=JINKO))+
+  scale_fill_gradientn(colors=brewer.pal(9,"GnBu"))+
+  #theme_gray (base_family = "HiraKakuPro-W3")+
+  theme_gray()+
+  labs(fill = "単位：人")+
+  ggtitle("国勢調査(2020年)における平塚市の人口 (町丁・字等別)")
+  
+```
+
+さらに鉄道路線、大学の立地などを重ねてみましょう。
+
+以下の例では、鉄道のデータを[国土数値情報](https://nlftp.mlit.go.jp/ksj/)という国土交通省が運営しているウェブサイトからダウンロードして使っています。このサイトの「4.交通」の中にある「鉄道(ライン）」というデータを使用しています。なお年ごとに路線が変化しているため、国勢調査に合わせて2020年のデータを使用しています。
+
+この鉄道データは全国のJR及び私鉄を全て含むので、このままプロットすると全国の全ての鉄道路線が表示されます。そのため平塚市の路線に限定する必要があります。
+
+そこで使用しているが、`st_intersection`という関数です。この関数を使うと二つの地理データに共通の部分だけを残すことができます。鉄道(ライン)データは駅の情報も含むため、駅も赤色で表示しています。
+
+最後に東海大学の位置を`annotate`関数を使って東海大学の場所を、`geom_text`関数を使って、東海大学の名称を表示しました。これらの関数は緯度、経度を使って表示することができます。
+
+
+```{r GISlike3, warning=FALSE, message=FALSE}
+
+trainline <- read_sf("Train/N02-20_RailroadSection.shp",
+                     crs = "+proj=longlat +datum=WGS84") # 鉄道線路網のシェープファイル
+
+trainstation <- read_sf("Train/N02-20_Station.shp",
+                     crs = "+proj=longlat +datum=WGS84") # 鉄道駅のシェープファイル
+
+
+# ポリゴンの頂点が重複していると新しいsfではエラーが出るので、
+# s2をFALSEにしている
+# https://stackoverflow.com/questions/68808238/how-to-fix-spherical-geometry-errors-caused-by-conversion-from-geos-to-s2
+sf_use_s2(FALSE) 
+
+ggplot(map)+
+  geom_sf(aes(fill=JINKO))+
+  geom_sf(data=st_sf(geometry=st_intersection(st_union(map),st_union(trainline))),
+          color="black",size=1)+
+  geom_sf(data=st_sf(geometry=st_intersection(st_union(map),st_union(trainstation))),
+          color="red",size=1)+
+  annotate("point", x = 139.274823, y = 35.365831, colour = "blue", size=2)+
+  #geom_text(aes(x = 139.266823, y = 35.362831), label = "東海大学",
+  #          family = "HiraKakuProN-W3")+
+  geom_text(aes(x = 139.266823, y = 35.362831), label = "東海大学")+
+  scale_fill_gradientn(colors=brewer.pal(9,"GnBu"))+
+  #theme_gray (base_family = "HiraKakuPro-W3")+
+  theme_gray()+
+  labs(fill = "単位：人")+
+  xlab("経度")+ylab("緯度")+
+  ggtitle("国勢調査(2020年)における平塚市の人口 (町丁・字等別)") 
+  
+
+```
+
+何か足りません。そうです。小田急線が描かれていないのです。その理由は、小田急線が平塚市内を通っていないためです。そこで鉄道ラインデータの切り出しの際にのみ、隣の秦野市のデータを加えて、小田急線を表示したいと思います。
+
+```{r GISlike4, warning=FALSE, message=FALSE}
+
+HadMap <- read_sf("Hadano/r2ka14211.shp",
+                     crs = "+proj=longlat +datum=WGS84") # 秦野市のシェープファイル
+
+ggplot()+
+  geom_sf(data=map,aes(fill=JINKO))+
+  geom_sf(data=st_sf(geometry=st_intersection(st_union(map),st_union(trainline))),
+          color="black",size=1)+
+  geom_sf(data=st_sf(geometry=st_intersection(st_union(map),st_union(trainstation))),
+          color="red",size=1)+
+  geom_sf(data=st_sf(geometry=st_intersection(st_union(HadMap),st_union(trainline))),
+          color="black",size=1)+
+  geom_sf(data=st_sf(geometry=st_intersection(st_union(HadMap),st_union(trainstation))),
+          color="red",size=1)+
+  annotate("point", x = 139.274823, y = 35.365831, colour = "blue", size=2)+
+  #geom_text(aes(x = 139.266823, y = 35.362831), label = "東海大学",
+  #          family = "HiraKakuProN-W3")+
+  #geom_text(aes(x = 139.28, y = 35.388), label = "小田急線",
+  #          family = "HiraKakuProN-W3")+
+  #geom_text(aes(x = 139.283, y = 35.328), label = "新幹線",
+  #          family = "HiraKakuProN-W3")+
+  #geom_text(aes(x = 139.375, y = 35.327), label = "東海道線",
+  #          family = "HiraKakuProN-W3")+
+  geom_text(aes(x = 139.266823, y = 35.362831), label = "東海大学")+
+  geom_text(aes(x = 139.28, y = 35.388), label = "小田急線")+
+  geom_text(aes(x = 139.283, y = 35.328), label = "新幹線")+
+  geom_text(aes(x = 139.375, y = 35.327), label = "東海道線")+
+  scale_fill_gradientn(colors=brewer.pal(9,"GnBu"))+
+  #theme_gray (base_family = "HiraKakuPro-W3")+
+  theme_gray()+
+  labs(fill = "単位：人")+
+  xlab("経度")+ylab("緯度")+
+  xlim(139.23,139.38)+
+  ggtitle("国勢調査(2020年)における平塚市の人口 (町丁・字等別)") 
+
+```
+
+続いて、地価公示のデータをプロットしてみよう。地価公示の詳細は[こちら](https://www.mlit.go.jp/totikensangyo/totikensangyo_fr4_000043.html)をご覧ください。
+
+> 地価公示とは、地価公示法に基づいて、国土交通省土地鑑定委員会が、適正な地価の
+> 形成に寄与するために、毎年1月1日時点における標準地の正常な価格を3月に公示 
+> (約26,000地点で実施）するもので、社会・経済活動についての制度インフラとなって
+> います。
+
+
+> **主な役割**
+
+>  1.一般の土地の取引に対して指標を与えること
+
+>  2.不動産鑑定の規準となること
+
+>  3.公共事業用地の取得価格算定の規準となること
+
+>  4.土地の相続評価および固定資産税評価についての基準となること
+
+>  5.国土利用計画法による土地の価格審査の規準となること　　等
+
+
+位置情報のついた地価公示のデータは
+
+[国土数値情報](https://nlftp.mlit.go.jp/ksj/index.html) >> 1. 国土 >> 地価公示 (ポイント) >> 神奈川県 >> 令和4年
+
+にアクセスすると入手できる。
+
+以下では、地価の動向をみるために、より大きなスケールで可視化を行いたいので、ベースマップを平塚市から神奈川県に変更する。
+
+```{r Chika1, warning=FALSE, message=FALSE}
+
+#地価公示
+KanagawaPrice<-read_sf("KanagawaLandPrice/L01-22_14.shp")
+
+#地価を整数型に
+KanagawaPrice$price<-as.integer(KanagawaPrice$L01_006)
+
+# 用途が住宅のもののみに
+KanagawaPrice %>%
+  filter(L01_027=="住宅") -> KanagawaPriceHome
+
+#神奈川県の行政界
+KanaSHP<-read_sf("KanagawaBorder/N03-22_14_220101.shp",
+                 crs = "+proj=longlat +datum=WGS84") # 神奈川県のシェープファイル
+
+
+ggplot() +
+  geom_sf(data=KanaSHP,fill="white")+
+  geom_sf(data=st_sf(geometry=st_intersection(st_union(KanaSHP),st_union(trainline))),
+          color="black",size=0.5)+
+  geom_sf(data=st_sf(geometry=st_intersection(st_union(KanaSHP),st_union(trainstation))),
+          color="red",size=0.5)+
+  geom_sf(data=KanagawaPriceHome,aes(color = price/1000),size=0.2)+
+  scale_color_gradientn(colors=brewer.pal(9,"YlOrRd"))+
+  #theme_bw(base_family = "HiraKakuPro-W3")+
+  theme_bw()+
+  labs(color = "単位：千円/m^2")+
+  ggtitle("神奈川県の地価公示(令和4年)")
+
+```
+
+これをさらにヒートマップの形で表してみよう。
+
+```{r heatmap, warning=FALSE, message=FALSE}
+
+#install.packages("akima")
+library(akima)
+
+# sf objectから緯度経度を取り出す
+KanaCoords<-st_coordinates(KanagawaPrice$geometry)
+
+# XおよびYとして緯度経度を追加する（もっと美しいやり方あると思いますが）
+KanaPrice<-cbind(KanagawaPrice,KanaCoords)
+
+
+# ポイントデータを補間する
+interpdf <-interp2xyz(interp(x=KanaPrice$X, y=KanaPrice$Y, z=KanaPrice$price/1000,
+                             duplicate="mean"), data.frame=TRUE)
+
+interpdf %>%
+  filter(!is.na(z)) %>%
+  tbl_df() %>%
+  ggplot() + geom_sf(data=KanaSHP)+
+  geom_contour(aes(x = x, y = y, z = z),color = "white", alpha = 1) +  
+  geom_tile(aes(x = x, y = y, z = z, fill = z,alpha=0.5)) + 
+  scale_fill_distiller(palette="Spectral", na.value="white") + 
+  #theme_gray(base_family = "HiraKakuPro-W3")+
+  theme_gray()+
+  labs(fill="単位：千円/m^2")+
+  guides(alpha=FALSE)+xlab("")+ylab("")+
+  ggtitle("神奈川県の地価公示(令和3年)")->p
+
+print(p)
+```
+
+次に二つの地図を１枚の図としてプロットしてみよう。
+
+使用するデータは一般廃棄物処理の施設立地のデータで以下でダウンロードできる。
+
+[国土数値情報](https://nlftp.mlit.go.jp/ksj/) >> 3. 地域 >> 廃棄物処理施設 (ポイント) >> 神奈川県(平成24年)
+
+
+はじめにそれぞれの地図を作成する。
+
+```{r twomap,  warning=FALSE, message=FALSE}
+
+library(cowplot)
+
+setwd("D:/Offline_folder/Tokai/Tokai_DataAnalysis/dataanalysis")
+
+# 産業廃棄物のデータの読み込み
+KanaIndWaste<-read_sf("KanagawaWaste/P15-12_14_GML/P15-12_14_IndustrialWasteDisposalFacilities.shp",
+                   options = c("encoding=CP932"),
+                   crs="WGS84")
+
+# 一般廃棄物のデータの読み込み
+KanaMswWaste<-read_sf("KanagawaWaste/P15-12_14_GML/P15-12_14_GeneralWasteDisposalFacilities.shp",
+                   options = c("encoding=CP932"),
+                   crs="WGS84")
+
+# 神奈川県のポリゴン
+KanaMap<-read_sf("KanagawaBorder/N03-22_14_220101.shp",
+                   options = c("encoding=CP932"),
+                   crs="WGS84")
+
+#湘南地域の選択
+KanaMap |>
+  filter(N03_004 %in% c("平塚市","秦野市","伊勢原市","大磯町",
+                        "二宮町","寒川町","藤沢市","茅ヶ崎市"))-> ShonanMap
+
+#湘南地域の地図をShaMapと命名
+ShoMap<-
+  geom_sf(data=ShonanMap, size=0.8)
+
+
+#湘南地域の可視化
+ggplot()+
+  geom_sf(data=KanaMap, size=0.1)+ShoMap+
+  theme(axis.ticks = element_blank(), 
+        axis.text.x = element_blank(), 
+        axis.text.y = element_blank())->ggm1
+
+ggm1
+
+#湘南地域の一般廃棄物処理施設の取り出し
+# 秦野と伊勢原は２市で一部事務組合を組織して、共同で整備している。
+KanaMswWaste %>%
+  filter(P15_002 %in% c("平塚市","秦野市伊勢原市環境衛生組合","大磯町",
+                        "二宮町","寒川町","藤沢市","茅ヶ崎市")) -> ShonanMswMap
+
+#平塚市の一般廃棄物施設の地図をHiratsukaMswMapと命名
+ShoMswMap<-
+  geom_sf(data=ShonanMswMap, size=3)
+
+
+#施設の可視化
+ggplot()+
+  ShoMap+
+  ShoMswMap+
+  #theme_gray (base_family = "HiraKakuPro-W3")+
+  theme_gray()+
+  annotate("point", x = 139.274823, y = 35.365831, colour = "white", size=5)+
+  #geom_text(aes(x = 139.266823, y = 35.362831), label = "東海大学", color="blue",
+  #          family = "HiraKakuProN-W3")+
+  geom_text(aes(x = 139.266823, y = 35.362831), label = "東海大学", color="blue")+
+  ggtitle("湘南地域の一般廃棄物処理施設")->ggm2
+
+ggm2
+```
+
+
+最後に2つの地図を合わせる。
+
+```{r twomap2,  warning=FALSE, message=FALSE}
+# Combining both maps
+gg_inset_map1 = ggdraw() +
+  draw_plot(ggm2) +
+  draw_plot(ggm1, x = 0.10, y = 0.17, width = 0.25, height = 0.25)+
+  #theme_gray (base_family = "HiraKakuPro-W3")
+  theme_gray()
+
+gg_inset_map1
+
+```
+
+
+この地図をみると廃棄物処理施設は、藤沢市の一部を除けば市町村境界に近い場所に立地しているようにもみえる。皆さんはどう思うだろうか？
+
+
+
+## 世界地図の活用
+
+[Natural Earth](https://www.naturalearthdata.com/)というサイトに世界の地図データが無料でダウンロード可能である。以下では、`rnaturalearth`という`package`を使って、世界地図を描写する方法を紹介する。
+
+```{r worldmap1}
+
+library(sf)
+library(tidyverse)
+#install.packages("rnaturalearth")
+#install.packages("rnaturalearthdata")
+library(rnaturalearth) #Natural Earth 
+
+
+World_map<-
+  ne_countries(scale="medium",
+               returnclass="sf")
+ggplot()+
+  geom_sf(data=World_map)
+
+#最初の6行
+World_map %>% 
+  head()
+
+```
+
+
+### 世界地図を利用した可視化
+
+所得階層別の塗り分け
+
+```{r worldmap2}
+
+ggplot()+
+  geom_sf(data=World_map, aes(fill=income_grp), 
+          color="white", size=0.001)+
+  labs(fill="所得グループ",
+       caption="出典：Natural Earth")+
+  ggtitle("世界の所得分布")+
+  #theme_bw(base_family = "HiraKakuPro-W3")+
+  theme_bw()+
+  theme(legend.position="bottom")+
+  guides(fill=guide_legend(nrow=2))
+
+```
+
+世界地図に用いられる投影法の1つであるロビンソン図法（Robinson projection）を用いた可視化。
+
+```{r worldmap3}
+
+ggplot()+
+  geom_sf(data=World_map, aes(fill=income_grp), 
+          color="white", size=0.001)+
+  scale_fill_brewer(palette = "PuBu",direction=-1)+ # direction=-1でパレットが逆順に
+  labs(fill="所得グループ",
+       caption="出典：Natural Earth")+
+  ggtitle("世界の所得分布（ロビンソン図法）")+
+  #theme_bw(base_family = "HiraKakuPro-W3")+
+  theme_bw()+
+  coord_sf(crs=st_crs("ESRI:54030"))+
+  theme(legend.position="bottom")+
+  guides(fill=guide_legend(nrow=2))
+
+```
+
+### 世界銀行データの可視化
+
+世界銀行の公開データは、[World Bank Open Data](https://data.worldbank.org/)というサイトでアクセスできる。このサイトを眺めるだけでも多くの情報を得ることができるので、開発問題に興味がある場合はアクセスしてみよう。このサイトの情報は膨大であるため、`WDI`という`package`を用いてデータにアクセスするのが効率的である。
+
+なお、自分が探しているindicatorのIDを探す場合は、[このサイト](https://atmarkit.itmedia.co.jp/ait/articles/1009/02/news119_2.html)を参照のこと。
+
+```{r worldmap4}
+
+#install.packages("WDI")
+library(WDI)
+
+#使用する指標
+CO2percapita<-
+  WDI(indicator="EN.ATM.CO2E.PC", extra=TRUE,
+      start=2015, end=2015)
+
+#列名の変更
+CO2percapita %>% 
+  rename(CO2pc=EN.ATM.CO2E.PC) ->
+  CO2percapita
+
+#地図データと世界銀行データの結合
+CO2pc_map<-
+  left_join(World_map, CO2percapita, by=c("iso_a3"="iso3c"))
+
+#南極大陸削除(好み)
+CO2pc_map %>% 
+  filter(iso_a3!="ATA") ->
+  CO2pc_map
+
+#地図の描写
+ggplot()+
+  geom_sf(data=CO2pc_map, aes(fill=CO2pc), 
+          color="white", size=0.001)+
+  scale_fill_gradientn(colors=brewer.pal(5,"PuBu"))+
+  labs(fill="トン/人",
+       caption="出典：Natural Earth, The World Bank")+
+  ggtitle("一人あたりCO2排出量（2015年）")+
+  coord_sf(crs=st_crs("ESRI:54030"))+
+  #theme_bw(base_family = "HiraKakuPro-W3")+
+  theme_bw()+
+  theme(legend.position="bottom")
+
+```
+
+
+## さらに学びたい人へ
+
+このチャプターの内容の多くは、[Rによる地理空間データの可視化](https://shinichiro-iwata.github.io/geospatial-data-visualization/)を参照しています。このサイトではこの他にもたくさんの美しい地図の作成方法が解説されていますので、地図を用いた分析を行いたい場合は必ず確認しましょう。
+
+また、[ここ](https://yamamoto-masashi.github.io/DSlec/20220906DepictingCity.html)に特定の市町村を選んで、さらに分析を加えた例を掲載しています。地域の分析に興味のある人は試してみてください。
