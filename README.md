@@ -1,4 +1,4 @@
-# bookdown minimal template
+# 東海大学政治経済学部2023年度データ分析入門A/B
 
 This is a bookdown minimal template for Japanese language. This based [rstudio/bookdown-demo](https://github.com/rstudio/bookdown-demo) repository. 
 
