@@ -15,4 +15,4 @@ If you want use multibyte text on ggplot2 by "bookdown::pdf_book()", you might s
 
 ## contact
 
-Please mention to [@kazutan](https://twitter.com/kazutan) or issue the this repository.
+Please mention to [kainomura at tsc.u-tokai.ac.jp] or issue the this repository.
