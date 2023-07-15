@@ -30,6 +30,7 @@ display.brewer.all()
 #install.packages(c("NipponMap", "tidyverse"))
 
 # ライブラリコマンドでの読み込みは毎回必要
+library(RColorBrewer)
 library(readxl)
 library(NipponMap)
 library(sf)

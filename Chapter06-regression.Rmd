@@ -169,6 +169,12 @@ plot(gpa1$colGPA,gpa1$skipped)
 
 ```
 
+## 交差項
+```{r interaction}
+
+```
+
+
 ## 因果推論 (Quasi Experiment)の例
 
 因果推論の方法として、Wooldridge(2016, Example 13.3)を例にDifference-in-Differencesを解説する。この例は、Kiel and McClain(1995, JEEM)からの抜粋であり、Massachusetts州のNorth Andoverにおいて、焼却炉を建設することで周辺の住宅価値が下がったかどうかをDifference-in-Differencesで分析している。

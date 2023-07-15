@@ -11,8 +11,8 @@ library(igraph)
 library(tidygraph)
 library(ggraph)
 
-getwd() # 現在の作業ディレクトリを確認
-setwd("D:/Offline_folder/Tokai/Tokai_DataAnalysis/dataanalysis") # 作業ディレクトリの変更
+#getwd() # 現在の作業ディレクトリを確認
+#setwd("D:/Offline_folder/Tokai/Tokai_DataAnalysis/dataanalysis") # 作業ディレクトリの変更
 
 ```
 
@@ -91,5 +91,4 @@ g3 %>%
 https://www.slideshare.net/MitsunoriSato/tokyor32-network-analysis-24442516
 https://www.slideshare.net/kashitan/tidygraphggraph-ver-152368322
 https://www.slideshare.net/kashitan/ss-238547900
-
-
+https://qiita.com/saltcooky/items/4e55d97c5e86dfb208cd
