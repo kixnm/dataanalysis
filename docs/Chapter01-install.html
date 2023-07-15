@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>chapter: 2 R及びRStudioのインストール | データ分析入門</title>
+  <title>Chapter:2 R及びRStudioのインストール　 | データ分析入門</title>
   <meta name="description" content="This site is prepared for Introductory Data Analysis at Tokai University." />
-  <meta name="generator" content="bookdown 0.33.2 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.33.3 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="chapter: 2 R及びRStudioのインストール | データ分析入門" />
+  <meta property="og:title" content="Chapter:2 R及びRStudioのインストール　 | データ分析入門" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This site is prepared for Introductory Data Analysis at Tokai University." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="chapter: 2 R及びRStudioのインストール | データ分析入門" />
+  <meta name="twitter:title" content="Chapter:2 R及びRStudioのインストール　 | データ分析入門" />
   
   <meta name="twitter:description" content="This site is prepared for Introductory Data Analysis at Tokai University." />
   
@@ -23,7 +23,7 @@
 <meta name="author" content="野村　魁" />
 
 
-<meta name="date" content="2023-04-13" />
+<meta name="date" content="2023-07-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -123,6 +123,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -148,11 +152,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#授業計画"><i class="fa fa-check"></i><b>1.4</b> 授業計画</a></li>
 <li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#謝辞"><i class="fa fa-check"></i><b>1.5</b> 謝辞</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="Chapter01-install.html"><a href="Chapter01-install.html"><i class="fa fa-check"></i><b>2</b> R及びRStudioのインストール</a>
+<li class="chapter" data-level="2" data-path="Chapter01-install.html"><a href="Chapter01-install.html"><i class="fa fa-check"></i><b>2</b> R及びRStudioのインストール　</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="Chapter01-install.html"><a href="Chapter01-install.html#インストールを始める前に"><i class="fa fa-check"></i><b>2.1</b> インストールを始める前に</a></li>
 <li class="chapter" data-level="2.2" data-path="Chapter01-install.html"><a href="Chapter01-install.html#rのインストール"><i class="fa fa-check"></i><b>2.2</b> Rのインストール</a></li>
 <li class="chapter" data-level="2.3" data-path="Chapter01-install.html"><a href="Chapter01-install.html#rstudioのインストール"><i class="fa fa-check"></i><b>2.3</b> RStudioのインストール</a></li>
+<li class="chapter" data-level="2.4" data-path="Chapter01-install.html"><a href="Chapter01-install.html#統計とデータの可視化"><i class="fa fa-check"></i><b>2.4</b> 統計とデータの可視化</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="Chapter02-intoduction.html"><a href="Chapter02-intoduction.html"><i class="fa fa-check"></i><b>3</b> Rを使ってみよう：四則演算から外部データの読み込みまで</a>
 <ul>
@@ -209,12 +214,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.1" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#最小二乗法ordinary-least-squere-methodとは"><i class="fa fa-check"></i><b>7.1</b> 最小二乗法(Ordinary Least Squere Method)とは</a></li>
 <li class="chapter" data-level="7.2" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#単回帰の事例"><i class="fa fa-check"></i><b>7.2</b> 単回帰の事例</a></li>
 <li class="chapter" data-level="7.3" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#重回帰分析"><i class="fa fa-check"></i><b>7.3</b> 重回帰分析</a></li>
-<li class="chapter" data-level="7.4" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#因果推論-quasi-experimentの例"><i class="fa fa-check"></i><b>7.4</b> 因果推論 (Quasi Experiment)の例</a>
+<li class="chapter" data-level="7.4" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#交差項"><i class="fa fa-check"></i><b>7.4</b> 交差項</a></li>
+<li class="chapter" data-level="7.5" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#因果推論-quasi-experimentの例"><i class="fa fa-check"></i><b>7.5</b> 因果推論 (Quasi Experiment)の例</a>
 <ul>
-<li class="chapter" data-level="7.4.1" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#例1"><i class="fa fa-check"></i><b>7.4.1</b> 例1</a></li>
-<li class="chapter" data-level="7.4.2" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#例2"><i class="fa fa-check"></i><b>7.4.2</b> 例2</a></li>
-<li class="chapter" data-level="7.4.3" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#例3"><i class="fa fa-check"></i><b>7.4.3</b> 例3</a></li>
-<li class="chapter" data-level="7.4.4" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#logをとった場合"><i class="fa fa-check"></i><b>7.4.4</b> logをとった場合</a></li>
+<li class="chapter" data-level="7.5.1" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#例1"><i class="fa fa-check"></i><b>7.5.1</b> 例1</a></li>
+<li class="chapter" data-level="7.5.2" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#例2"><i class="fa fa-check"></i><b>7.5.2</b> 例2</a></li>
+<li class="chapter" data-level="7.5.3" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#例3"><i class="fa fa-check"></i><b>7.5.3</b> 例3</a></li>
+<li class="chapter" data-level="7.5.4" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#logをとった場合"><i class="fa fa-check"></i><b>7.5.4</b> logをとった場合</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="Chapter08-DataHandling.html"><a href="Chapter08-DataHandling.html"><i class="fa fa-check"></i><b>8</b> dplyrによるデータ集計</a>
@@ -250,7 +256,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="r及びrstudioのインストール" class="section level1 hasAnchor" number="2">
-<h1><span class="header-section-number">chapter: 2</span> R及びRStudioのインストール<a href="Chapter01-install.html#r及びrstudioのインストール" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<h1><span class="header-section-number">Chapter:2</span> R及びRStudioのインストール　<a href="Chapter01-install.html#r及びrstudioのインストール" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div id="インストールを始める前に" class="section level2 hasAnchor" number="2.1">
 <h2><span class="header-section-number">2.1</span> インストールを始める前に<a href="Chapter01-install.html#インストールを始める前に" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>思いつく順にいくつか注意点をまとめてみました。</p>
@@ -308,6 +314,141 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Windows版のガイドでは、P82からがRStudioのインストールガイドです。</li>
 <li>MacOS版のガイドでは、P34からがRStudioのインストールガイドです。</li>
 </ul>
+</div>
+<div id="統計とデータの可視化" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> 統計とデータの可視化<a href="Chapter01-install.html#統計とデータの可視化" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>現代ではPCの計算能力の向上や身近な道具になったこと、データの蓄積と利活用への理解などがあり、誰でも分析が可能になりました。かつてはデータを集めること、分析することのハードルが今より高かったわけですが有用性は今と変わらず、むしろ説得材料として非常に効果的だったと思われます。</p>
+<p>その一つの事例としてナイチンゲールの鶏頭図があります。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="Chapter01-install.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using package &quot;HsitData&quot; (https://rdrr.io/cran/HistData/man/)</span></span>
+<span id="cb1-2"><a href="Chapter01-install.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────────────────────────────────────────────────────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.1     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
+## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="Chapter01-install.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(HistData)</span>
+<span id="cb3-2"><a href="Chapter01-install.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Nightingale)</span>
+<span id="cb3-3"><a href="Chapter01-install.html#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="Chapter01-install.html#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># For some graphs, it is more convenient to reshape death rates to long format</span></span>
+<span id="cb3-5"><a href="Chapter01-install.html#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  keep only Date and death rates</span></span>
+<span id="cb3-6"><a href="Chapter01-install.html#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#require(reshape)</span></span>
+<span id="cb3-7"><a href="Chapter01-install.html#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Night&lt;- Nightingale[,c(1,8:10)]</span></span>
+<span id="cb3-8"><a href="Chapter01-install.html#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#melted &lt;- melt(Night, &quot;Date&quot;)</span></span>
+<span id="cb3-9"><a href="Chapter01-install.html#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#names(melted) &lt;- c(&quot;Date&quot;, &quot;Cause&quot;, &quot;Deaths&quot;)</span></span>
+<span id="cb3-10"><a href="Chapter01-install.html#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#melted$Cause &lt;- sub(&quot;\\.rate&quot;, &quot;&quot;, melted$Cause)</span></span>
+<span id="cb3-11"><a href="Chapter01-install.html#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#melted$Regime &lt;- ordered( rep(c(rep(&#39;Before&#39;, 12), rep(&#39;After&#39;, 12)), 3), </span></span>
+<span id="cb3-12"><a href="Chapter01-install.html#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#                          levels=c(&#39;Before&#39;, &#39;After&#39;))</span></span>
+<span id="cb3-13"><a href="Chapter01-install.html#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#Night &lt;- melted</span></span>
+<span id="cb3-14"><a href="Chapter01-install.html#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="Chapter01-install.html#cb3-15" aria-hidden="true" tabindex="-1"></a>Night <span class="ot">&lt;-</span> Nightingale <span class="sc">|&gt;</span></span>
+<span id="cb3-16"><a href="Chapter01-install.html#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Date,Disease.rate<span class="sc">:</span>Other.rate) <span class="sc">|&gt;</span></span>
+<span id="cb3-17"><a href="Chapter01-install.html#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">!</span>Date,<span class="at">names_to =</span> <span class="st">&quot;Cause&quot;</span>,<span class="at">values_to =</span> <span class="st">&quot;Deaths&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-18"><a href="Chapter01-install.html#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Date=</span><span class="fu">ymd</span>(Date),</span>
+<span id="cb3-19"><a href="Chapter01-install.html#cb3-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">Cause=</span><span class="fu">str_replace</span>(Cause,<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.rate&quot;</span>, <span class="st">&quot;&quot;</span>),</span>
+<span id="cb3-20"><a href="Chapter01-install.html#cb3-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">Regime=</span><span class="fu">case_when</span>(Date<span class="sc">&gt;=</span><span class="dv">1855-04-01</span><span class="sc">~</span><span class="st">&quot;After&quot;</span>,<span class="cn">TRUE</span><span class="sc">~</span><span class="st">&quot;Before&quot;</span>))</span>
+<span id="cb3-21"><a href="Chapter01-install.html#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="Chapter01-install.html#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># subsets, to facilitate separate plotting</span></span>
+<span id="cb3-23"><a href="Chapter01-install.html#cb3-23" aria-hidden="true" tabindex="-1"></a>Night1 <span class="ot">&lt;-</span> <span class="fu">subset</span>(Night, Date <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;1855-04-01&quot;</span>))</span>
+<span id="cb3-24"><a href="Chapter01-install.html#cb3-24" aria-hidden="true" tabindex="-1"></a>Night2 <span class="ot">&lt;-</span> <span class="fu">subset</span>(Night, Date <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;1855-04-01&quot;</span>))</span>
+<span id="cb3-25"><a href="Chapter01-install.html#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="Chapter01-install.html#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co"># sort according to Deaths in decreasing order, so counts are not obscured [thx: Monique Graf]</span></span>
+<span id="cb3-27"><a href="Chapter01-install.html#cb3-27" aria-hidden="true" tabindex="-1"></a>Night1 <span class="ot">&lt;-</span> Night1[<span class="fu">order</span>(Night1<span class="sc">$</span>Deaths, <span class="at">decreasing=</span><span class="cn">TRUE</span>),]</span>
+<span id="cb3-28"><a href="Chapter01-install.html#cb3-28" aria-hidden="true" tabindex="-1"></a>Night2 <span class="ot">&lt;-</span> Night2[<span class="fu">order</span>(Night2<span class="sc">$</span>Deaths, <span class="at">decreasing=</span><span class="cn">TRUE</span>),]</span>
+<span id="cb3-29"><a href="Chapter01-install.html#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="Chapter01-install.html#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co"># merge the two sorted files</span></span>
+<span id="cb3-31"><a href="Chapter01-install.html#cb3-31" aria-hidden="true" tabindex="-1"></a>Night <span class="ot">&lt;-</span> <span class="fu">rbind</span>(Night1, Night2)</span>
+<span id="cb3-32"><a href="Chapter01-install.html#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="Chapter01-install.html#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="Chapter01-install.html#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(ggplot2)</span>
+<span id="cb3-35"><a href="Chapter01-install.html#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Before plot</span></span>
+<span id="cb3-36"><a href="Chapter01-install.html#cb3-36" aria-hidden="true" tabindex="-1"></a>cxc1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(Night1, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Date), <span class="at">y=</span>Deaths, <span class="at">fill =</span> Cause)) <span class="sc">+</span></span>
+<span id="cb3-37"><a href="Chapter01-install.html#cb3-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># do it as a stacked bar chart first</span></span>
+<span id="cb3-38"><a href="Chapter01-install.html#cb3-38" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_bar</span>(<span class="at">width =</span> <span class="dv">1</span>, <span class="at">position=</span><span class="st">&quot;identity&quot;</span>, <span class="at">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="at">color=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb3-39"><a href="Chapter01-install.html#cb3-39" aria-hidden="true" tabindex="-1"></a>        <span class="co"># set scale so area ~ Deaths    </span></span>
+<span id="cb3-40"><a href="Chapter01-install.html#cb3-40" aria-hidden="true" tabindex="-1"></a>   <span class="fu">scale_y_sqrt</span>() </span>
+<span id="cb3-41"><a href="Chapter01-install.html#cb3-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A coxcomb plot = bar chart + polar coordinates</span></span>
+<span id="cb3-42"><a href="Chapter01-install.html#cb3-42" aria-hidden="true" tabindex="-1"></a>cxc1 <span class="sc">+</span> <span class="fu">coord_polar</span>(<span class="at">start=</span><span class="dv">3</span><span class="sc">*</span>pi<span class="sc">/</span><span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb3-43"><a href="Chapter01-install.html#cb3-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">&quot;Causes of Mortality in the Army in the East&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb3-44"><a href="Chapter01-install.html#cb3-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<p><img src="book_filename_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="Chapter01-install.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># After plot</span></span>
+<span id="cb4-2"><a href="Chapter01-install.html#cb4-2" aria-hidden="true" tabindex="-1"></a>cxc2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(Night2, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Date), <span class="at">y=</span>Deaths, <span class="at">fill =</span> Cause)) <span class="sc">+</span></span>
+<span id="cb4-3"><a href="Chapter01-install.html#cb4-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_bar</span>(<span class="at">width =</span> <span class="dv">1</span>, <span class="at">position=</span><span class="st">&quot;identity&quot;</span>, <span class="at">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="at">color=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb4-4"><a href="Chapter01-install.html#cb4-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">scale_y_sqrt</span>()</span>
+<span id="cb4-5"><a href="Chapter01-install.html#cb4-5" aria-hidden="true" tabindex="-1"></a>cxc2 <span class="sc">+</span> <span class="fu">coord_polar</span>(<span class="at">start=</span><span class="dv">3</span><span class="sc">*</span>pi<span class="sc">/</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb4-6"><a href="Chapter01-install.html#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">&quot;Causes of Mortality in the Army in the East&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb4-7"><a href="Chapter01-install.html#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<p><img src="book_filename_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="Chapter01-install.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Not run: </span></span>
+<span id="cb5-2"><a href="Chapter01-install.html#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># do both together, with faceting</span></span>
+<span id="cb5-3"><a href="Chapter01-install.html#cb5-3" aria-hidden="true" tabindex="-1"></a>cxc <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(Night, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Date), <span class="at">y=</span>Deaths, <span class="at">fill =</span> Cause)) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="Chapter01-install.html#cb5-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_bar</span>(<span class="at">width =</span> <span class="dv">1</span>, <span class="at">position=</span><span class="st">&quot;identity&quot;</span>, <span class="at">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="at">color=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb5-5"><a href="Chapter01-install.html#cb5-5" aria-hidden="true" tabindex="-1"></a> <span class="fu">scale_y_sqrt</span>() <span class="sc">+</span></span>
+<span id="cb5-6"><a href="Chapter01-install.html#cb5-6" aria-hidden="true" tabindex="-1"></a> <span class="fu">facet_grid</span>(. <span class="sc">~</span> Regime, <span class="at">scales=</span><span class="st">&quot;free&quot;</span>, <span class="at">labeller=</span>label_both)</span>
+<span id="cb5-7"><a href="Chapter01-install.html#cb5-7" aria-hidden="true" tabindex="-1"></a>cxc <span class="sc">+</span> <span class="co">#coord_polar(start=3*pi/2) +</span></span>
+<span id="cb5-8"><a href="Chapter01-install.html#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">&quot;Causes of Mortality in the Army in the East&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb5-9"><a href="Chapter01-install.html#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<p><img src="book_filename_files/figure-html/unnamed-chunk-1-3.png" width="672" /></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="Chapter01-install.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## End(Not run)</span></span>
+<span id="cb6-2"><a href="Chapter01-install.html#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="Chapter01-install.html#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="do">## What if she had made a set of line graphs?</span></span>
+<span id="cb6-4"><a href="Chapter01-install.html#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="Chapter01-install.html#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># these plots are best viewed with width ~ 2 * height </span></span>
+<span id="cb6-6"><a href="Chapter01-install.html#cb6-6" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;black&quot;</span>)</span>
+<span id="cb6-7"><a href="Chapter01-install.html#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(Nightingale, {</span>
+<span id="cb6-8"><a href="Chapter01-install.html#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(Date, Disease.rate, <span class="at">type=</span><span class="st">&quot;n&quot;</span>, <span class="at">cex.lab=</span><span class="fl">1.25</span>, </span>
+<span id="cb6-9"><a href="Chapter01-install.html#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab=</span><span class="st">&quot;Annual Death Rate&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Date&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>,</span>
+<span id="cb6-10"><a href="Chapter01-install.html#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">main=</span><span class="st">&quot;Causes of Mortality of the British Army in the East&quot;</span>);</span>
+<span id="cb6-11"><a href="Chapter01-install.html#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># background, to separate before, after</span></span>
+<span id="cb6-12"><a href="Chapter01-install.html#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rect</span>(<span class="fu">as.Date</span>(<span class="st">&quot;1854/4/1&quot;</span>), <span class="sc">-</span><span class="dv">10</span>, <span class="fu">as.Date</span>(<span class="st">&quot;1855/3/1&quot;</span>), </span>
+<span id="cb6-13"><a href="Chapter01-install.html#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="fl">1.02</span><span class="sc">*</span><span class="fu">max</span>(Disease.rate), <span class="at">col=</span><span class="fu">gray</span>(.<span class="dv">90</span>), <span class="at">border=</span><span class="st">&quot;transparent&quot;</span>);</span>
+<span id="cb6-14"><a href="Chapter01-install.html#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">text</span>( <span class="fu">as.Date</span>(<span class="st">&quot;1854/4/1&quot;</span>), .<span class="dv">98</span><span class="sc">*</span><span class="fu">max</span>(Disease.rate), <span class="st">&quot;Before Sanitary</span><span class="sc">\n</span><span class="st">Commission&quot;</span>, <span class="at">pos=</span><span class="dv">4</span>);</span>
+<span id="cb6-15"><a href="Chapter01-install.html#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">text</span>( <span class="fu">as.Date</span>(<span class="st">&quot;1855/4/1&quot;</span>), .<span class="dv">98</span><span class="sc">*</span><span class="fu">max</span>(Disease.rate), <span class="st">&quot;After Sanitary</span><span class="sc">\n</span><span class="st">Commission&quot;</span>, <span class="at">pos=</span><span class="dv">4</span>);</span>
+<span id="cb6-16"><a href="Chapter01-install.html#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># plot the data</span></span>
+<span id="cb6-17"><a href="Chapter01-install.html#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(Date, Disease.rate, <span class="at">type=</span><span class="st">&quot;b&quot;</span>, <span class="at">col=</span>colors[<span class="dv">1</span>], <span class="at">lwd=</span><span class="dv">3</span>);</span>
+<span id="cb6-18"><a href="Chapter01-install.html#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(Date, Wounds.rate, <span class="at">type=</span><span class="st">&quot;b&quot;</span>, <span class="at">col=</span>colors[<span class="dv">2</span>], <span class="at">lwd=</span><span class="dv">2</span>);</span>
+<span id="cb6-19"><a href="Chapter01-install.html#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(Date, Other.rate, <span class="at">type=</span><span class="st">&quot;b&quot;</span>, <span class="at">col=</span>colors[<span class="dv">3</span>], <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb6-20"><a href="Chapter01-install.html#cb6-20" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-21"><a href="Chapter01-install.html#cb6-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-22"><a href="Chapter01-install.html#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># add custom Date axis and legend</span></span>
+<span id="cb6-23"><a href="Chapter01-install.html#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="fu">axis.Date</span>(<span class="dv">1</span>, <span class="at">at=</span><span class="fu">seq</span>(<span class="fu">as.Date</span>(<span class="st">&quot;1854/4/1&quot;</span>), <span class="fu">as.Date</span>(<span class="st">&quot;1856/3/1&quot;</span>), <span class="st">&quot;3 months&quot;</span>), <span class="at">format=</span><span class="st">&quot;%b %Y&quot;</span>)</span>
+<span id="cb6-24"><a href="Chapter01-install.html#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="fu">as.Date</span>(<span class="st">&quot;1855/10/20&quot;</span>), <span class="dv">700</span>, <span class="fu">c</span>(<span class="st">&quot;Preventable disease&quot;</span>, <span class="st">&quot;Wounds and injuries&quot;</span>, <span class="st">&quot;Other&quot;</span>),</span>
+<span id="cb6-25"><a href="Chapter01-install.html#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">col=</span>colors, <span class="at">fill=</span>colors, <span class="at">title=</span><span class="st">&quot;Cause&quot;</span>, <span class="at">cex=</span><span class="fl">1.25</span>)</span></code></pre></div>
+<p><img src="book_filename_files/figure-html/unnamed-chunk-1-4.png" width="672" /></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="Chapter01-install.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternatively, show each cause of death as percent of total</span></span>
+<span id="cb7-2"><a href="Chapter01-install.html#cb7-2" aria-hidden="true" tabindex="-1"></a>Nightingale <span class="ot">&lt;-</span> <span class="fu">within</span>(Nightingale, {</span>
+<span id="cb7-3"><a href="Chapter01-install.html#cb7-3" aria-hidden="true" tabindex="-1"></a>    Total <span class="ot">&lt;-</span> Disease <span class="sc">+</span> Wounds <span class="sc">+</span> Other</span>
+<span id="cb7-4"><a href="Chapter01-install.html#cb7-4" aria-hidden="true" tabindex="-1"></a>    Disease.pct <span class="ot">&lt;-</span> <span class="dv">100</span><span class="sc">*</span>Disease<span class="sc">/</span>Total</span>
+<span id="cb7-5"><a href="Chapter01-install.html#cb7-5" aria-hidden="true" tabindex="-1"></a>    Wounds.pct <span class="ot">&lt;-</span> <span class="dv">100</span><span class="sc">*</span>Wounds<span class="sc">/</span>Total</span>
+<span id="cb7-6"><a href="Chapter01-install.html#cb7-6" aria-hidden="true" tabindex="-1"></a>    Other.pct <span class="ot">&lt;-</span> <span class="dv">100</span><span class="sc">*</span>Other<span class="sc">/</span>Total</span>
+<span id="cb7-7"><a href="Chapter01-install.html#cb7-7" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb7-8"><a href="Chapter01-install.html#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="Chapter01-install.html#cb7-9" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;black&quot;</span>)</span>
+<span id="cb7-10"><a href="Chapter01-install.html#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(Nightingale, {</span>
+<span id="cb7-11"><a href="Chapter01-install.html#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(Date, Disease.pct, <span class="at">type=</span><span class="st">&quot;n&quot;</span>,  <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="at">cex.lab=</span><span class="fl">1.25</span>,</span>
+<span id="cb7-12"><a href="Chapter01-install.html#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab=</span><span class="st">&quot;Percent deaths&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Date&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>,</span>
+<span id="cb7-13"><a href="Chapter01-install.html#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">main=</span><span class="st">&quot;Percentage of Deaths by Cause&quot;</span>);</span>
+<span id="cb7-14"><a href="Chapter01-install.html#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># background, to separate before, after</span></span>
+<span id="cb7-15"><a href="Chapter01-install.html#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rect</span>(<span class="fu">as.Date</span>(<span class="st">&quot;1854/4/1&quot;</span>), <span class="sc">-</span><span class="dv">10</span>, <span class="fu">as.Date</span>(<span class="st">&quot;1855/3/1&quot;</span>), </span>
+<span id="cb7-16"><a href="Chapter01-install.html#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="fl">1.02</span><span class="sc">*</span><span class="fu">max</span>(Disease.rate), <span class="at">col=</span><span class="fu">gray</span>(.<span class="dv">90</span>), <span class="at">border=</span><span class="st">&quot;transparent&quot;</span>);</span>
+<span id="cb7-17"><a href="Chapter01-install.html#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">text</span>( <span class="fu">as.Date</span>(<span class="st">&quot;1854/4/1&quot;</span>), .<span class="dv">98</span><span class="sc">*</span><span class="fu">max</span>(Disease.pct), <span class="st">&quot;Before Sanitary</span><span class="sc">\n</span><span class="st">Commission&quot;</span>, <span class="at">pos=</span><span class="dv">4</span>);</span>
+<span id="cb7-18"><a href="Chapter01-install.html#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">text</span>( <span class="fu">as.Date</span>(<span class="st">&quot;1855/4/1&quot;</span>), .<span class="dv">98</span><span class="sc">*</span><span class="fu">max</span>(Disease.pct), <span class="st">&quot;After Sanitary</span><span class="sc">\n</span><span class="st">Commission&quot;</span>, <span class="at">pos=</span><span class="dv">4</span>);</span>
+<span id="cb7-19"><a href="Chapter01-install.html#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># plot the data</span></span>
+<span id="cb7-20"><a href="Chapter01-install.html#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(Date, Disease.pct, <span class="at">type=</span><span class="st">&quot;b&quot;</span>, <span class="at">col=</span>colors[<span class="dv">1</span>], <span class="at">lwd=</span><span class="dv">3</span>);</span>
+<span id="cb7-21"><a href="Chapter01-install.html#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(Date, Wounds.pct, <span class="at">type=</span><span class="st">&quot;b&quot;</span>, <span class="at">col=</span>colors[<span class="dv">2</span>], <span class="at">lwd=</span><span class="dv">2</span>);</span>
+<span id="cb7-22"><a href="Chapter01-install.html#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(Date, Other.pct, <span class="at">type=</span><span class="st">&quot;b&quot;</span>, <span class="at">col=</span>colors[<span class="dv">3</span>], <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb7-23"><a href="Chapter01-install.html#cb7-23" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-24"><a href="Chapter01-install.html#cb7-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-25"><a href="Chapter01-install.html#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co"># add custom Date axis and legend</span></span>
+<span id="cb7-26"><a href="Chapter01-install.html#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="fu">axis.Date</span>(<span class="dv">1</span>, <span class="at">at=</span><span class="fu">seq</span>(<span class="fu">as.Date</span>(<span class="st">&quot;1854/4/1&quot;</span>), <span class="fu">as.Date</span>(<span class="st">&quot;1856/3/1&quot;</span>), <span class="st">&quot;3 months&quot;</span>), <span class="at">format=</span><span class="st">&quot;%b %Y&quot;</span>)</span>
+<span id="cb7-27"><a href="Chapter01-install.html#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="fu">as.Date</span>(<span class="st">&quot;1854/8/20&quot;</span>), <span class="dv">60</span>, <span class="fu">c</span>(<span class="st">&quot;Preventable disease&quot;</span>, <span class="st">&quot;Wounds and injuries&quot;</span>, <span class="st">&quot;Other&quot;</span>),</span>
+<span id="cb7-28"><a href="Chapter01-install.html#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">col=</span>colors, <span class="at">fill=</span>colors, <span class="at">title=</span><span class="st">&quot;Cause&quot;</span>, <span class="at">cex=</span><span class="fl">1.25</span>)</span></code></pre></div>
+<p><img src="book_filename_files/figure-html/unnamed-chunk-1-5.png" width="672" /></p>
 
 </div>
 </div>
@@ -348,8 +489,8 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/Chapter01-install.Rmd",
-"text": "Edit"
+"link": null,
+"text": null
 },
 "history": {
 "link": null,
