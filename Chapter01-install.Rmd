@@ -56,7 +56,7 @@
 
 その一つの事例としてナイチンゲールの鶏頭図があります。
 
-```{r}
+```{r nightingale}
 # Using package "HsitData" (https://rdrr.io/cran/HistData/man/)
 library(tidyverse)
 library(HistData)
