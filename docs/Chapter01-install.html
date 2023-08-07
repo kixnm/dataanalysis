@@ -23,7 +23,7 @@
 <meta name="author" content="野村　魁" />
 
 
-<meta name="date" content="2023-07-15" />
+<meta name="date" content="2023-08-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -321,13 +321,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>その一つの事例としてナイチンゲールの鶏頭図があります。</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="Chapter01-install.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using package &quot;HsitData&quot; (https://rdrr.io/cran/HistData/man/)</span></span>
 <span id="cb1-2"><a href="Chapter01-install.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
-<pre><code>## ── Attaching core tidyverse packages ──────────────────────────────────────────────────────────────────────────────────────── tidyverse 2.0.0 ──
+<pre><code>## ── Attaching core tidyverse packages ────────────────────────────────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.1     ✔ readr     2.1.4
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
 ## ✔ ggplot2   3.4.2     ✔ tibble    3.2.1
 ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
 ## ✔ purrr     1.0.1     
-## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
@@ -375,7 +375,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-42"><a href="Chapter01-install.html#cb3-42" aria-hidden="true" tabindex="-1"></a>cxc1 <span class="sc">+</span> <span class="fu">coord_polar</span>(<span class="at">start=</span><span class="dv">3</span><span class="sc">*</span>pi<span class="sc">/</span><span class="dv">2</span>) <span class="sc">+</span> </span>
 <span id="cb3-43"><a href="Chapter01-install.html#cb3-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">&quot;Causes of Mortality in the Army in the East&quot;</span>) <span class="sc">+</span> </span>
 <span id="cb3-44"><a href="Chapter01-install.html#cb3-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">&quot;&quot;</span>)</span></code></pre></div>
-<p><img src="book_filename_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="book_filename_files/figure-html/nightingale-1.png" width="672" /></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="Chapter01-install.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># After plot</span></span>
 <span id="cb4-2"><a href="Chapter01-install.html#cb4-2" aria-hidden="true" tabindex="-1"></a>cxc2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(Night2, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Date), <span class="at">y=</span>Deaths, <span class="at">fill =</span> Cause)) <span class="sc">+</span></span>
 <span id="cb4-3"><a href="Chapter01-install.html#cb4-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_bar</span>(<span class="at">width =</span> <span class="dv">1</span>, <span class="at">position=</span><span class="st">&quot;identity&quot;</span>, <span class="at">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="at">color=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
@@ -383,7 +383,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-5"><a href="Chapter01-install.html#cb4-5" aria-hidden="true" tabindex="-1"></a>cxc2 <span class="sc">+</span> <span class="fu">coord_polar</span>(<span class="at">start=</span><span class="dv">3</span><span class="sc">*</span>pi<span class="sc">/</span><span class="dv">2</span>) <span class="sc">+</span></span>
 <span id="cb4-6"><a href="Chapter01-install.html#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">&quot;Causes of Mortality in the Army in the East&quot;</span>) <span class="sc">+</span> </span>
 <span id="cb4-7"><a href="Chapter01-install.html#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">&quot;&quot;</span>)</span></code></pre></div>
-<p><img src="book_filename_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<p><img src="book_filename_files/figure-html/nightingale-2.png" width="672" /></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="Chapter01-install.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Not run: </span></span>
 <span id="cb5-2"><a href="Chapter01-install.html#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># do both together, with faceting</span></span>
 <span id="cb5-3"><a href="Chapter01-install.html#cb5-3" aria-hidden="true" tabindex="-1"></a>cxc <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(Night, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Date), <span class="at">y=</span>Deaths, <span class="at">fill =</span> Cause)) <span class="sc">+</span></span>
@@ -393,7 +393,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-7"><a href="Chapter01-install.html#cb5-7" aria-hidden="true" tabindex="-1"></a>cxc <span class="sc">+</span> <span class="co">#coord_polar(start=3*pi/2) +</span></span>
 <span id="cb5-8"><a href="Chapter01-install.html#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">&quot;Causes of Mortality in the Army in the East&quot;</span>) <span class="sc">+</span> </span>
 <span id="cb5-9"><a href="Chapter01-install.html#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">&quot;&quot;</span>)</span></code></pre></div>
-<p><img src="book_filename_files/figure-html/unnamed-chunk-1-3.png" width="672" /></p>
+<p><img src="book_filename_files/figure-html/nightingale-3.png" width="672" /></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="Chapter01-install.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## End(Not run)</span></span>
 <span id="cb6-2"><a href="Chapter01-install.html#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="Chapter01-install.html#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="do">## What if she had made a set of line graphs?</span></span>
@@ -419,7 +419,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-23"><a href="Chapter01-install.html#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="fu">axis.Date</span>(<span class="dv">1</span>, <span class="at">at=</span><span class="fu">seq</span>(<span class="fu">as.Date</span>(<span class="st">&quot;1854/4/1&quot;</span>), <span class="fu">as.Date</span>(<span class="st">&quot;1856/3/1&quot;</span>), <span class="st">&quot;3 months&quot;</span>), <span class="at">format=</span><span class="st">&quot;%b %Y&quot;</span>)</span>
 <span id="cb6-24"><a href="Chapter01-install.html#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="fu">as.Date</span>(<span class="st">&quot;1855/10/20&quot;</span>), <span class="dv">700</span>, <span class="fu">c</span>(<span class="st">&quot;Preventable disease&quot;</span>, <span class="st">&quot;Wounds and injuries&quot;</span>, <span class="st">&quot;Other&quot;</span>),</span>
 <span id="cb6-25"><a href="Chapter01-install.html#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">col=</span>colors, <span class="at">fill=</span>colors, <span class="at">title=</span><span class="st">&quot;Cause&quot;</span>, <span class="at">cex=</span><span class="fl">1.25</span>)</span></code></pre></div>
-<p><img src="book_filename_files/figure-html/unnamed-chunk-1-4.png" width="672" /></p>
+<p><img src="book_filename_files/figure-html/nightingale-4.png" width="672" /></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="Chapter01-install.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternatively, show each cause of death as percent of total</span></span>
 <span id="cb7-2"><a href="Chapter01-install.html#cb7-2" aria-hidden="true" tabindex="-1"></a>Nightingale <span class="ot">&lt;-</span> <span class="fu">within</span>(Nightingale, {</span>
 <span id="cb7-3"><a href="Chapter01-install.html#cb7-3" aria-hidden="true" tabindex="-1"></a>    Total <span class="ot">&lt;-</span> Disease <span class="sc">+</span> Wounds <span class="sc">+</span> Other</span>
@@ -448,7 +448,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-26"><a href="Chapter01-install.html#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="fu">axis.Date</span>(<span class="dv">1</span>, <span class="at">at=</span><span class="fu">seq</span>(<span class="fu">as.Date</span>(<span class="st">&quot;1854/4/1&quot;</span>), <span class="fu">as.Date</span>(<span class="st">&quot;1856/3/1&quot;</span>), <span class="st">&quot;3 months&quot;</span>), <span class="at">format=</span><span class="st">&quot;%b %Y&quot;</span>)</span>
 <span id="cb7-27"><a href="Chapter01-install.html#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="fu">as.Date</span>(<span class="st">&quot;1854/8/20&quot;</span>), <span class="dv">60</span>, <span class="fu">c</span>(<span class="st">&quot;Preventable disease&quot;</span>, <span class="st">&quot;Wounds and injuries&quot;</span>, <span class="st">&quot;Other&quot;</span>),</span>
 <span id="cb7-28"><a href="Chapter01-install.html#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">col=</span>colors, <span class="at">fill=</span>colors, <span class="at">title=</span><span class="st">&quot;Cause&quot;</span>, <span class="at">cex=</span><span class="fl">1.25</span>)</span></code></pre></div>
-<p><img src="book_filename_files/figure-html/unnamed-chunk-1-5.png" width="672" /></p>
+<p><img src="book_filename_files/figure-html/nightingale-5.png" width="672" /></p>
 
 </div>
 </div>
