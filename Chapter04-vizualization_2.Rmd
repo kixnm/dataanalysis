@@ -37,7 +37,7 @@ library(sf)
 library(tidyverse)
 
 #ウェブサイトから直接ダウンロードする場合
-url1<-"https://yamamoto-masashi.github.io/DSlec/20201028sample.xls"
+url1<-"https://github.com/kixnm/dataanalysis/raw/main/20201028sample.xls"
 #download.file(url1,destfile="20201028sample.xls")
 download.file(url1,destfile="20201028sample.xls",mode="wb")
 
@@ -346,10 +346,10 @@ print(p)
 はじめにそれぞれの地図を作成する。
 
 ```{r twomap,  warning=FALSE, message=FALSE}
-
+library(sf)
 library(cowplot)
 
-setwd("D:/Offline_folder/Tokai/Tokai_DataAnalysis/dataanalysis")
+setwd("D:/Offline_folder/DataAnalysis/dataanalysis")
 
 # 産業廃棄物のデータの読み込み
 KanaIndWaste<-read_sf("KanagawaWaste/P15-12_14_GML/P15-12_14_IndustrialWasteDisposalFacilities.shp",

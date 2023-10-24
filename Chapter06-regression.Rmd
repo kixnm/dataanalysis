@@ -24,7 +24,7 @@ library(modelsummary)
 
 
 getwd() # 現在の作業ディレクトリを確認
-setwd("D:/Offline_folder/Tokai/Tokai_DataAnalysis/dataanalysis") # 作業ディレクトリの変更
+setwd("D:/Offline_folder/DataAnalysis/dataanalysis") # 作業ディレクトリの変更
 
 ```
 

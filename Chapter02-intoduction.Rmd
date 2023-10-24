@@ -300,7 +300,7 @@ library(readxl)
 #setwd("/users/yamamoto/R/ForTeaching") # 作業ディレクトリの変更
 
 #ウェブサイトから直接ダウンロードする場合
-url1<-"https://yamamoto-masashi.github.io/DSlec/20201028sample.xls"
+url1<-"https://github.com/kixnm/dataanalysis/raw/main/20201028sample.xls"
 download.file(url1,destfile="20201028sample.xls") #for Mac
 download.file(url1,destfile="20201028sample.xls",mode="wb") #for Windows
 

@@ -4,26 +4,26 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>chapter: 9 Rmarkdownの使い方 | データ分析入門</title>
+  <title>Chapter: 9 Rmarkdownの使い方 | 個人プロジェクト</title>
   <meta name="description" content="This site is prepared for Introductory Data Analysis at Tokai University." />
-  <meta name="generator" content="bookdown 0.33.2 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.33.3 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="chapter: 9 Rmarkdownの使い方 | データ分析入門" />
+  <meta property="og:title" content="Chapter: 9 Rmarkdownの使い方 | 個人プロジェクト" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This site is prepared for Introductory Data Analysis at Tokai University." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="chapter: 9 Rmarkdownの使い方 | データ分析入門" />
+  <meta name="twitter:title" content="Chapter: 9 Rmarkdownの使い方 | 個人プロジェクト" />
   
   <meta name="twitter:description" content="This site is prepared for Introductory Data Analysis at Tokai University." />
   
 
-<meta name="author" content="野村　魁" />
+<meta name="author" content="名前" />
 
 
-<meta name="date" content="2023-04-13" />
+<meta name="date" content="2023-10-22" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="Chapter08-DataHandling.html"/>
-
+<link rel="next" href="Chapter10-Network.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -123,6 +123,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -137,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="https://yamamoto-masashi.github.io/teaching.html">Teachingへ戻る</a></li>
+<li><a href="./">データ分析入門</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> イントロダクション</a>
@@ -148,11 +152,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#授業計画"><i class="fa fa-check"></i><b>1.4</b> 授業計画</a></li>
 <li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#謝辞"><i class="fa fa-check"></i><b>1.5</b> 謝辞</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="Chapter01-install.html"><a href="Chapter01-install.html"><i class="fa fa-check"></i><b>2</b> R及びRStudioのインストール</a>
+<li class="chapter" data-level="2" data-path="Chapter01-install.html"><a href="Chapter01-install.html"><i class="fa fa-check"></i><b>2</b> R及びRStudioのインストール　</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="Chapter01-install.html"><a href="Chapter01-install.html#インストールを始める前に"><i class="fa fa-check"></i><b>2.1</b> インストールを始める前に</a></li>
 <li class="chapter" data-level="2.2" data-path="Chapter01-install.html"><a href="Chapter01-install.html#rのインストール"><i class="fa fa-check"></i><b>2.2</b> Rのインストール</a></li>
 <li class="chapter" data-level="2.3" data-path="Chapter01-install.html"><a href="Chapter01-install.html#rstudioのインストール"><i class="fa fa-check"></i><b>2.3</b> RStudioのインストール</a></li>
+<li class="chapter" data-level="2.4" data-path="Chapter01-install.html"><a href="Chapter01-install.html#統計とデータの可視化"><i class="fa fa-check"></i><b>2.4</b> 統計とデータの可視化</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="Chapter02-intoduction.html"><a href="Chapter02-intoduction.html"><i class="fa fa-check"></i><b>3</b> Rを使ってみよう：四則演算から外部データの読み込みまで</a>
 <ul>
@@ -209,12 +214,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.1" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#最小二乗法ordinary-least-squere-methodとは"><i class="fa fa-check"></i><b>7.1</b> 最小二乗法(Ordinary Least Squere Method)とは</a></li>
 <li class="chapter" data-level="7.2" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#単回帰の事例"><i class="fa fa-check"></i><b>7.2</b> 単回帰の事例</a></li>
 <li class="chapter" data-level="7.3" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#重回帰分析"><i class="fa fa-check"></i><b>7.3</b> 重回帰分析</a></li>
-<li class="chapter" data-level="7.4" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#因果推論-quasi-experimentの例"><i class="fa fa-check"></i><b>7.4</b> 因果推論 (Quasi Experiment)の例</a>
+<li class="chapter" data-level="7.4" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#交差項"><i class="fa fa-check"></i><b>7.4</b> 交差項</a></li>
+<li class="chapter" data-level="7.5" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#因果推論-quasi-experimentの例"><i class="fa fa-check"></i><b>7.5</b> 因果推論 (Quasi Experiment)の例</a>
 <ul>
-<li class="chapter" data-level="7.4.1" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#例1"><i class="fa fa-check"></i><b>7.4.1</b> 例1</a></li>
-<li class="chapter" data-level="7.4.2" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#例2"><i class="fa fa-check"></i><b>7.4.2</b> 例2</a></li>
-<li class="chapter" data-level="7.4.3" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#例3"><i class="fa fa-check"></i><b>7.4.3</b> 例3</a></li>
-<li class="chapter" data-level="7.4.4" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#logをとった場合"><i class="fa fa-check"></i><b>7.4.4</b> logをとった場合</a></li>
+<li class="chapter" data-level="7.5.1" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#例1"><i class="fa fa-check"></i><b>7.5.1</b> 例1</a></li>
+<li class="chapter" data-level="7.5.2" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#例2"><i class="fa fa-check"></i><b>7.5.2</b> 例2</a></li>
+<li class="chapter" data-level="7.5.3" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#例3"><i class="fa fa-check"></i><b>7.5.3</b> 例3</a></li>
+<li class="chapter" data-level="7.5.4" data-path="Chapter06-regression.html"><a href="Chapter06-regression.html#logをとった場合"><i class="fa fa-check"></i><b>7.5.4</b> logをとった場合</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="Chapter08-DataHandling.html"><a href="Chapter08-DataHandling.html"><i class="fa fa-check"></i><b>8</b> dplyrによるデータ集計</a>
@@ -229,6 +235,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.2" data-path="Chapter09-RMarkdown.html"><a href="Chapter09-RMarkdown.html#rmarkdownの使い方-1"><i class="fa fa-check"></i><b>9.2</b> Rmarkdownの使い方</a></li>
 <li class="chapter" data-level="9.3" data-path="Chapter09-RMarkdown.html"><a href="Chapter09-RMarkdown.html#参考資料"><i class="fa fa-check"></i><b>9.3</b> 参考資料</a></li>
 </ul></li>
+<li class="chapter" data-level="10" data-path="Chapter10-Network.html"><a href="Chapter10-Network.html"><i class="fa fa-check"></i><b>10</b> network analysis</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="Chapter10-Network.html"><a href="Chapter10-Network.html#ネットワーク分析"><i class="fa fa-check"></i><b>10.1</b> ネットワーク分析</a></li>
+<li class="chapter" data-level="10.2" data-path="DataAnalysis_template.html"><a href="DataAnalysis_template.html"><i class="fa fa-check"></i><b>10.2</b> 1.はじめに</a></li>
+<li class="chapter" data-level="10.3" data-path="DataAnalysis_template.html"><a href="DataAnalysis_template.html#仮説"><i class="fa fa-check"></i><b>10.3</b> 2. 仮説</a></li>
+<li class="chapter" data-level="10.4" data-path="DataAnalysis_template.html"><a href="DataAnalysis_template.html#問題の背景"><i class="fa fa-check"></i><b>10.4</b> 3. 問題の背景</a></li>
+<li class="chapter" data-level="10.5" data-path="DataAnalysis_template.html"><a href="DataAnalysis_template.html#分析"><i class="fa fa-check"></i><b>10.5</b> 4. 分析</a></li>
+<li class="chapter" data-level="10.6" data-path="DataAnalysis_template.html"><a href="DataAnalysis_template.html#考察"><i class="fa fa-check"></i><b>10.6</b> 5. 考察</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -241,7 +256,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">データ分析入門</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">個人プロジェクト</a>
           </h1>
         </div>
 
@@ -250,7 +265,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="rmarkdownの使い方" class="section level1 hasAnchor" number="9">
-<h1><span class="header-section-number">chapter: 9</span> Rmarkdownの使い方<a href="Chapter09-RMarkdown.html#rmarkdownの使い方" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<h1><span class="header-section-number">Chapter: 9</span> Rmarkdownの使い方<a href="Chapter09-RMarkdown.html#rmarkdownの使い方" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div id="rmarkdownを用いる理由" class="section level2 hasAnchor" number="9.1">
 <h2><span class="header-section-number">9.1</span> Rmarkdownを用いる理由<a href="Chapter09-RMarkdown.html#rmarkdownを用いる理由" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>個人的にデータを分析して楽しむ?場合には特に問題になりませんが、将来、データ分析の結果を仕事で用いることになった場合、その再現性が重要になります。前の学期に作業したエクセルファイルをどうやって作成したか、ファイルそのものを見直しても全く思い出せない、という経験がある人が皆さんの中にもいるかもしれません。個人の学習としてはともかく、ビジネスでこのようなことがおこることは絶対に避けなければなりません。</p>
@@ -276,8 +291,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="Chapter08-DataHandling.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="Chapter08-DataHandling.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="Chapter10-Network.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

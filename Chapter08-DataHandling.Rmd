@@ -89,7 +89,7 @@ ggplot(midwestMI)+geom_histogram(aes(poptotal))
 library(readxl)
 
 #ウェブサイトから直接ダウンロードする場合
-url1<-"https://yamamoto-masashi.github.io/DSlec/kakei2000.xlsx"
+url1<-"https://github.com/kixnm/dataanalysis/raw/main/kakei2000.xlsx"
 download.file(url1,destfile="kakei2000.xlsx",mode="wb")
 
 # エクセルファイルの読み込み
