@@ -1,7 +1,7 @@
 # Rによる重回帰分析
 
 
-```{r packages, warning=FALSE, message=FALSE}
+```{r packages_regression, warning=FALSE, message=FALSE}
 #install.packages("gt")
 #install.packages("modelsummary")
 
