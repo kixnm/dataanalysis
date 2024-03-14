@@ -89,8 +89,9 @@ g3 %>%
 ```
 
 ##参考
+
 下記の資料を参考にこの項目を作成しました。
-https://www.slideshare.net/MitsunoriSato/tokyor32-network-analysis-24442516
-https://www.slideshare.net/kashitan/tidygraphggraph-ver-152368322
-https://www.slideshare.net/kashitan/ss-238547900
-https://qiita.com/saltcooky/items/4e55d97c5e86dfb208cd
+-https://www.slideshare.net/MitsunoriSato/tokyor32-network-analysis-24442516  
+-https://www.slideshare.net/kashitan/tidygraphggraph-ver-152368322  
+-https://www.slideshare.net/kashitan/ss-238547900  
+-https://qiita.com/saltcooky/items/4e55d97c5e86dfb208cd  
