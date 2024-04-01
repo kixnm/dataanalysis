@@ -1,0 +1,397 @@
+--- 
+title: "データ分析入門"
+author: "野村　魁"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+# github-repo: (your-github)
+# bookdown::render_book("index.Rmd", output_format = "bookdown::gitbook")
+description: "This site is prepared for Introductory Data Analysis at Tokai University. "
+---
+
+# github-repo: (your-github)
+
+Placeholder
+
+
+## 講義の概要
+## 履修上の注意点
+## 成績評価の基準および方法
+## 授業計画
+## 謝辞
+
+<!--chapter:end:index.Rmd-->
+
+
+
+## 質的な変数：サブグループ
+### 横並び棒グラフ
+### 積み上げ棒グラフ
+## 質的な変数：独立したリスト
+### サンキー図
+## 質的な変数：入れ子
+## 量的な変数：多変量
+### バブルプロット
+## カルトグラム
+
+<!--chapter:end:Additional_material.Rmd-->
+
+# R及びRStudioのインストール　
+
+## インストールを始める前に
+
+思いつく順にいくつか注意点をまとめてみました。
+
+1. プログラミングを始めるということは、マウスをあまり使わない世界に足を踏み入れること。
+    - 一つ一つの作業が文字として残るので、作業の再現性が高まります。
+    - クリックして探していたファイルを「パス(path)」という「住所」を示すことでパソコンに伝えることになります。
+2. **全角入力**(日本語入力：原則コメント欄のみ)と**半角入力**(英数字入力)の違いをいつも意識する。
+    - １２３４５は全角文字です。
+    - 12345は半角文字です。
+    - 1と１は区別がつきにくいですが、全角文字はプログラミングコードには使用できません。
+3. 変数やフォルダの名前をつける際に、スペースを入れることはトラブルのもとなのでなるべくスペースを含む名前はつけない。
+    - ちなみに、スペースの半角と全角は肉眼ではまず区別できません。
+4. `R`は大文字と小文字を区別する言語（プログラミング言語によっては区別しないものもある）。
+5. 頻出する「フォルダ」と「ディレクトリ」は、ほぼ同じ意味と考えて良い。
+6. `R`はインターネットアクセスのあるところで利用することでその真価を発揮できる。
+    - 学内の無線LANにはすぐにアクセスできる状態にしておきましょう。
+
+
+## Rのインストール
+
+`R`を利用する上で最大の難関が`R`のインストールです。幸い、高知工科大学の[矢内勇生](https://yukiyanai.github.io/jp/)先生が大変わかりやすいインストールガイドを作成してくださっています。自分の使っているマシンに応じて以下のいずれかの資料を参照してインストールを進めましょう。
+
+- [Windows用のインストールガイド](https://yukiyanai.github.io/jp/resources/docs/install-R_windows.pdf)
+
+- [Mac用のインストールガイド](https://yukiyanai.github.io/jp/resources/docs/install-R_macOS.pdf)
+
+
+`R`のインストールは環境によっては非常に簡単です。本講義の学生にとって、矢内先生のマニュアルに沿ってインストールすることが重要なのは、多くの学生が日本語版のウィンドウズかMacOSを使用しているためです。`R`が利用するディレクトリなどに、半角英数以外の名前(日本語など）が使用されていると大きな問題を引き起こすことがあります。
+
+上記のインストールガイドに書いてあることを順番に一つずつ実行すれば必ず成功します。ただし、以下はガイドのうち、とばしてもらっても大丈夫なものです。
+
+1. ウィンドウズユーザー
+    - プログラミング用のフォントの話題
+    - Rtoolsのインストール
+    - RStudioのカスタマイズ
+2. Macユーザー
+    - RStudioのカスタマイズ
+
+この作業にはダウンロードなども含めて大変時間がかかります。2回分の講義時間をとってありますので、じっくり腰を据えておこないましょう。
+
+
+## RStudioのインストール
+
+こちらは`R`のインストールに比べるとかなり楽に行うことができます。必ず先に`R`本体をインストールしてから、[RStudio](https://www.rstudio.com/)をインストールしてください。
+
+- Windows版のガイドでは、P82からがRStudioのインストールガイドです。
+- MacOS版のガイドでは、P34からがRStudioのインストールガイドです。
+
+
+## 統計とデータの可視化
+
+現代ではPCの計算能力の向上や身近な道具になったこと、データの蓄積と利活用への理解などがあり、誰でも分析が可能になりました。かつてはデータを集めること、分析することのハードルが今より高かったわけですが有用性は今と変わらず、むしろ説得材料として非常に効果的だったと思われます。
+
+その一つの事例としてナイチンゲールの鶏頭図があります。
+
+```{r nightingale}
+# Using package "HsitData" (https://rdrr.io/cran/HistData/man/)
+library(tidyverse)
+library(HistData)
+data(Nightingale)
+
+# For some graphs, it is more convenient to reshape death rates to long format
+#  keep only Date and death rates
+#require(reshape)
+#Night<- Nightingale[,c(1,8:10)]
+#melted <- melt(Night, "Date")
+#names(melted) <- c("Date", "Cause", "Deaths")
+#melted$Cause <- sub("\\.rate", "", melted$Cause)
+#melted$Regime <- ordered( rep(c(rep('Before', 12), rep('After', 12)), 3), 
+#                          levels=c('Before', 'After'))
+#Night <- melted
+
+Night <- Nightingale |>
+  select(Date,Disease.rate:Other.rate) |>
+  pivot_longer(!Date,names_to = "Cause",values_to = "Deaths") |>
+  mutate(Date=ymd(Date),
+         Cause=str_replace(Cause,"\\.rate", ""),
+         Regime=case_when(Date>=1855-04-01~"After",TRUE~"Before"))
+
+# subsets, to facilitate separate plotting
+Night1 <- subset(Night, Date < as.Date("1855-04-01"))
+Night2 <- subset(Night, Date >= as.Date("1855-04-01"))
+
+# sort according to Deaths in decreasing order, so counts are not obscured [thx: Monique Graf]
+Night1 <- Night1[order(Night1$Deaths, decreasing=TRUE),]
+Night2 <- Night2[order(Night2$Deaths, decreasing=TRUE),]
+
+# merge the two sorted files
+Night <- rbind(Night1, Night2)
+
+
+require(ggplot2)
+# Before plot
+cxc1 <- ggplot(Night1, aes(x = factor(Date), y=Deaths, fill = Cause)) +
+		# do it as a stacked bar chart first
+   geom_bar(width = 1, position="identity", stat="identity", color="black") +
+		# set scale so area ~ Deaths	
+   scale_y_sqrt() 
+		# A coxcomb plot = bar chart + polar coordinates
+cxc1 + coord_polar(start=3*pi/2) + 
+	ggtitle("Causes of Mortality in the Army in the East") + 
+	xlab("")
+
+# After plot
+cxc2 <- ggplot(Night2, aes(x = factor(Date), y=Deaths, fill = Cause)) +
+   geom_bar(width = 1, position="identity", stat="identity", color="black") +
+   scale_y_sqrt()
+cxc2 + coord_polar(start=3*pi/2) +
+	ggtitle("Causes of Mortality in the Army in the East") + 
+	xlab("")
+
+## Not run: 
+# do both together, with faceting
+cxc <- ggplot(Night, aes(x = factor(Date), y=Deaths, fill = Cause)) +
+ geom_bar(width = 1, position="identity", stat="identity", color="black") + 
+ scale_y_sqrt() +
+ facet_grid(. ~ Regime, scales="free", labeller=label_both)
+cxc + #coord_polar(start=3*pi/2) +
+	ggtitle("Causes of Mortality in the Army in the East") + 
+	xlab("")
+
+## End(Not run)
+
+## What if she had made a set of line graphs?
+
+# these plots are best viewed with width ~ 2 * height 
+colors <- c("blue", "red", "black")
+with(Nightingale, {
+	plot(Date, Disease.rate, type="n", cex.lab=1.25, 
+		ylab="Annual Death Rate", xlab="Date", xaxt="n",
+		main="Causes of Mortality of the British Army in the East");
+	# background, to separate before, after
+	rect(as.Date("1854/4/1"), -10, as.Date("1855/3/1"), 
+		1.02*max(Disease.rate), col=gray(.90), border="transparent");
+	text( as.Date("1854/4/1"), .98*max(Disease.rate), "Before Sanitary\nCommission", pos=4);
+	text( as.Date("1855/4/1"), .98*max(Disease.rate), "After Sanitary\nCommission", pos=4);
+	# plot the data
+	points(Date, Disease.rate, type="b", col=colors[1], lwd=3);
+	points(Date, Wounds.rate, type="b", col=colors[2], lwd=2);
+	points(Date, Other.rate, type="b", col=colors[3], lwd=2)
+	}
+)
+# add custom Date axis and legend
+axis.Date(1, at=seq(as.Date("1854/4/1"), as.Date("1856/3/1"), "3 months"), format="%b %Y")
+legend(as.Date("1855/10/20"), 700, c("Preventable disease", "Wounds and injuries", "Other"),
+	col=colors, fill=colors, title="Cause", cex=1.25)
+
+# Alternatively, show each cause of death as percent of total
+Nightingale <- within(Nightingale, {
+	Total <- Disease + Wounds + Other
+	Disease.pct <- 100*Disease/Total
+	Wounds.pct <- 100*Wounds/Total
+	Other.pct <- 100*Other/Total
+	})
+
+colors <- c("blue", "red", "black")
+with(Nightingale, {
+	plot(Date, Disease.pct, type="n",  ylim=c(0,100), cex.lab=1.25,
+		ylab="Percent deaths", xlab="Date", xaxt="n",
+		main="Percentage of Deaths by Cause");
+	# background, to separate before, after
+	rect(as.Date("1854/4/1"), -10, as.Date("1855/3/1"), 
+		1.02*max(Disease.rate), col=gray(.90), border="transparent");
+	text( as.Date("1854/4/1"), .98*max(Disease.pct), "Before Sanitary\nCommission", pos=4);
+	text( as.Date("1855/4/1"), .98*max(Disease.pct), "After Sanitary\nCommission", pos=4);
+	# plot the data
+	points(Date, Disease.pct, type="b", col=colors[1], lwd=3);
+	points(Date, Wounds.pct, type="b", col=colors[2], lwd=2);
+	points(Date, Other.pct, type="b", col=colors[3], lwd=2)
+	}
+)
+# add custom Date axis and legend
+axis.Date(1, at=seq(as.Date("1854/4/1"), as.Date("1856/3/1"), "3 months"), format="%b %Y")
+legend(as.Date("1854/8/20"), 60, c("Preventable disease", "Wounds and injuries", "Other"),
+	col=colors, fill=colors, title="Cause", cex=1.25)
+```
+
+
+<!--chapter:end:Chapter01-install.Rmd-->
+
+
+# Rを使ってみよう：四則演算から外部データの読み込みまで
+
+Placeholder
+
+
+## 基本的な計算
+## 変数の定義
+## データフレーム
+## データの型
+## パッケージの考え方
+## 外部ファイルの読み込み
+## 描画系のpackageの例
+### packageの応用例: 野球
+### packageの応用例：バスケ
+
+<!--chapter:end:Chapter02-intoduction.Rmd-->
+
+
+# 可視化(1)：ggplot2によるグラフ作成
+
+Placeholder
+
+
+## 可視化の重要性
+## Rによる可視化のデモ
+## ggplot2の考え方
+## ggplot2の事例
+### バブルチャート
+### ロリポップチャート
+### ヒストグラム
+### ボックスプロット
+### 時系列データ
+
+<!--chapter:end:Chapter03-visualization_1.Rmd-->
+
+
+# 可視化(2)：ggplot2による地図作成
+
+Placeholder
+
+
+## パレットの追加
+## 塗り分け地図の作成
+## よりGISライクな地図の作成
+## 世界地図の活用
+### 世界地図を利用した可視化
+### 世界銀行データの可視化
+## さらに学びたい人へ
+
+<!--chapter:end:Chapter04-vizualization_2.Rmd-->
+
+
+# Rによる統計的仮説検定
+
+Placeholder
+
+
+## データの読み込み
+## 平均・分散・標準偏差 {#mean_dev_sd}
+## 分散・標準偏差が大きいことのイメージ{#Diff_sd}
+## データフレームの要約
+## 相関係数{#correlation}
+## 仮説検定{#hypothesis}
+## t検定
+
+<!--chapter:end:Chapter05-hypothsis.Rmd-->
+
+
+# Rによる重回帰分析
+
+Placeholder
+
+
+## 最小二乗法(Ordinary Least Squere Method)とは
+## 単回帰の事例
+## 重回帰分析
+## 交差項
+## 因果推論 (Quasi Experiment)の例
+### 例1
+### 例2
+### 例3
+### logをとった場合
+
+<!--chapter:end:Chapter06-regression.Rmd-->
+
+
+#  dplyrによるデータ集計
+
+Placeholder
+
+
+## はじめに
+## パイプ演算子について
+## エクセル作業を代替してみる
+
+<!--chapter:end:Chapter08-DataHandling.Rmd-->
+
+#  Rmarkdownの使い方
+
+## Rmarkdownを用いる理由
+
+個人的にデータを分析して楽しむ?場合には特に問題になりませんが、将来、データ分析の結果を仕事で用いることになった場合、その再現性が重要になります。前の学期に作業したエクセルファイルをどうやって作成したか、ファイルそのものを見直しても全く思い出せない、という経験がある人が皆さんの中にもいるかもしれません。個人の学習としてはともかく、ビジネスでこのようなことがおこることは絶対に避けなければなりません。
+
+一定の時間が経過した後も同じ結果を確実に再現できるためには当初の分析段階で適切に記録を残しておくことが重要です。分析過程の記録を残すための`package`として、`Rmarkdown`というものがあります。この`Rmarkdown`を使うことで作成者の記録がとりやすいだけでなく、後でこの記録をみる利用者にとってもわかりやす資料を作ることができます。
+
+## Rmarkdownの使い方
+
+最も簡単に`Rmarkdown`を使う方法は、`RStudio`のメニューから`New File`、`R Markdown`を選択し、htmlで出力することです。このやり方は講義で画面で説明します。
+
+`Rmarkdown`を用いることで、htmlの途中に`R`のコードを簡単に含めることができます。このコードは単にコードを表示するだけでなく、htmlを作成するタイミングで実行して実行結果を含めることができます。このコードを含める部分をチャンクと言います。チャンクで使用できるオプションについては[こちら](https://teramonagi.hatenablog.com/entry/20130615/1371303616)を参考にしてください。
+
+
+## 参考資料
+
+さらに細かい設定などに興味のある人は以下のサイトを参照してください。
+
+- [Rmarkdown入門 (by kazutan on web)](https://kazutan.github.io/kazutanR/Rmd_intro.html)
+- [Rmarkdown入門 (by Jaehyun Song)](https://www.jaysong.net/tutorial/R/rmarkdown_intro.html/)
+
+<!--chapter:end:Chapter09-RMarkdown.Rmd-->
+
+
+# network analysis
+
+Placeholder
+
+
+## ネットワーク分析
+
+<!--chapter:end:Chapter10-Network.Rmd-->
+
+
+
+## GitとGithubとは
+## Roadmap
+## Setup
+### RとR studioのインストール
+### Gitのインストールとrstudio上のアクティベート
+## Projectの作成
+### GitHub上でレポジトリの作成
+### RStudio上でプロジェクトの作成
+## 同期
+### Git Bashでターミナルを開く
+### Git Credential Manager
+
+<!--chapter:end:ChapterXX-GitHub.Rmd-->
+
+---
+title: "個人プロジェクト"
+author: "名前"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## 1.はじめに
+なぜこの問題に関心を持っているのか
+
+## 2. 仮説
+「二酸化炭素が増えると気温が上昇する」
+
+## 3. 問題の背景
+そもそも、その問題を考える必要性は何か？
+
+## 4. 分析
+これまでのRの使い方で教わった方法
+*回帰分析
+*可視化
+*記述統計
+
+## 5. 考察
+分析の結果からいえること
+
+<!--chapter:end:DataAnalysis_template.Rmd-->
+

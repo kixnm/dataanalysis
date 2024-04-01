@@ -23,7 +23,7 @@
 <meta name="author" content="野村　魁" />
 
 
-<meta name="date" content="2023-10-24" />
+<meta name="date" content="2024-04-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -262,91 +262,91 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="rによる統計的仮説検定" class="section level1 hasAnchor" number="6">
 <h1><span class="header-section-number">Chapter: 6</span> Rによる統計的仮説検定<a href="Chapter05-hypothsis.html#rによる統計的仮説検定" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>統計学の講義で学んだ検定を<code>R</code>で実行する方法を学びます。</p>
-<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="Chapter05-hypothsis.html#cb164-1" tabindex="-1"></a><span class="co"># ライブラリコマンドでの読み込みは毎回必要</span></span>
-<span id="cb164-2"><a href="Chapter05-hypothsis.html#cb164-2" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb164-3"><a href="Chapter05-hypothsis.html#cb164-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb164-4"><a href="Chapter05-hypothsis.html#cb164-4" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb164-5"><a href="Chapter05-hypothsis.html#cb164-5" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb164-6"><a href="Chapter05-hypothsis.html#cb164-6" tabindex="-1"></a><span class="co">#library(foreign)</span></span>
-<span id="cb164-7"><a href="Chapter05-hypothsis.html#cb164-7" tabindex="-1"></a></span>
-<span id="cb164-8"><a href="Chapter05-hypothsis.html#cb164-8" tabindex="-1"></a><span class="co"># Macユーザ向けの日本語フォント</span></span>
-<span id="cb164-9"><a href="Chapter05-hypothsis.html#cb164-9" tabindex="-1"></a><span class="co">#theme_set(theme_gray(base_size = 10, base_family = &quot;HiraginoSans-W3&quot;))</span></span>
-<span id="cb164-10"><a href="Chapter05-hypothsis.html#cb164-10" tabindex="-1"></a></span>
-<span id="cb164-11"><a href="Chapter05-hypothsis.html#cb164-11" tabindex="-1"></a><span class="co">#ウィンドウズユーザー向けの日本語フォント</span></span>
-<span id="cb164-12"><a href="Chapter05-hypothsis.html#cb164-12" tabindex="-1"></a><span class="co">#windowsFonts(YuGothic = windowsFont(&quot;Yu Gothic&quot;))</span></span>
-<span id="cb164-13"><a href="Chapter05-hypothsis.html#cb164-13" tabindex="-1"></a><span class="co">#theme_set(theme_gray(base_size = 10, base_family = &quot;YuGothic&quot;))</span></span></code></pre></div>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="Chapter05-hypothsis.html#cb166-1" tabindex="-1"></a><span class="co"># ライブラリコマンドでの読み込みは毎回必要</span></span>
+<span id="cb166-2"><a href="Chapter05-hypothsis.html#cb166-2" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb166-3"><a href="Chapter05-hypothsis.html#cb166-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb166-4"><a href="Chapter05-hypothsis.html#cb166-4" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb166-5"><a href="Chapter05-hypothsis.html#cb166-5" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb166-6"><a href="Chapter05-hypothsis.html#cb166-6" tabindex="-1"></a><span class="co">#library(foreign)</span></span>
+<span id="cb166-7"><a href="Chapter05-hypothsis.html#cb166-7" tabindex="-1"></a></span>
+<span id="cb166-8"><a href="Chapter05-hypothsis.html#cb166-8" tabindex="-1"></a><span class="co"># Macユーザ向けの日本語フォント</span></span>
+<span id="cb166-9"><a href="Chapter05-hypothsis.html#cb166-9" tabindex="-1"></a><span class="co">#theme_set(theme_gray(base_size = 10, base_family = &quot;HiraginoSans-W3&quot;))</span></span>
+<span id="cb166-10"><a href="Chapter05-hypothsis.html#cb166-10" tabindex="-1"></a></span>
+<span id="cb166-11"><a href="Chapter05-hypothsis.html#cb166-11" tabindex="-1"></a><span class="co">#ウィンドウズユーザー向けの日本語フォント</span></span>
+<span id="cb166-12"><a href="Chapter05-hypothsis.html#cb166-12" tabindex="-1"></a><span class="co">#windowsFonts(YuGothic = windowsFont(&quot;Yu Gothic&quot;))</span></span>
+<span id="cb166-13"><a href="Chapter05-hypothsis.html#cb166-13" tabindex="-1"></a><span class="co">#theme_set(theme_gray(base_size = 10, base_family = &quot;YuGothic&quot;))</span></span></code></pre></div>
 <div id="データの読み込み" class="section level2 hasAnchor" number="6.1">
 <h2><span class="header-section-number">6.1</span> データの読み込み<a href="Chapter05-hypothsis.html#データの読み込み" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="Chapter05-hypothsis.html#cb165-1" tabindex="-1"></a><span class="co"># 変数の対応関係</span></span>
-<span id="cb165-2"><a href="Chapter05-hypothsis.html#cb165-2" tabindex="-1"></a><span class="co"># A1101_総人口【人】  </span></span>
-<span id="cb165-3"><a href="Chapter05-hypothsis.html#cb165-3" tabindex="-1"></a><span class="co"># A1301_15歳未満人口【人】</span></span>
-<span id="cb165-4"><a href="Chapter05-hypothsis.html#cb165-4" tabindex="-1"></a><span class="co"># A1303_65歳以上人口【人】  </span></span>
-<span id="cb165-5"><a href="Chapter05-hypothsis.html#cb165-5" tabindex="-1"></a><span class="co"># B1101_ 総面積（北方地域及び竹島を除く）【ｈａ】   </span></span>
-<span id="cb165-6"><a href="Chapter05-hypothsis.html#cb165-6" tabindex="-1"></a><span class="co"># B1103_ 可住地面積【ｈａ】  </span></span>
-<span id="cb165-7"><a href="Chapter05-hypothsis.html#cb165-7" tabindex="-1"></a><span class="co"># B4107_ 雪日数（年間）【日】 </span></span>
-<span id="cb165-8"><a href="Chapter05-hypothsis.html#cb165-8" tabindex="-1"></a><span class="co"># B4108_ 日照時間（年間）【時間】   </span></span>
-<span id="cb165-9"><a href="Chapter05-hypothsis.html#cb165-9" tabindex="-1"></a><span class="co"># D110101_市町村数【‐】   </span></span>
-<span id="cb165-10"><a href="Chapter05-hypothsis.html#cb165-10" tabindex="-1"></a><span class="co"># E6102_大学数【校】  </span></span>
-<span id="cb165-11"><a href="Chapter05-hypothsis.html#cb165-11" tabindex="-1"></a><span class="co"># E6302_大学学生数【人】</span></span>
-<span id="cb165-12"><a href="Chapter05-hypothsis.html#cb165-12" tabindex="-1"></a><span class="co"># F610201_超過実労働時間数（男）【時間】   </span></span>
-<span id="cb165-13"><a href="Chapter05-hypothsis.html#cb165-13" tabindex="-1"></a><span class="co"># F610202_超過実労働時間数（女）【時間】   </span></span>
-<span id="cb165-14"><a href="Chapter05-hypothsis.html#cb165-14" tabindex="-1"></a><span class="co"># H110202_空き家数【戸】</span></span>
-<span id="cb165-15"><a href="Chapter05-hypothsis.html#cb165-15" tabindex="-1"></a></span>
-<span id="cb165-16"><a href="Chapter05-hypothsis.html#cb165-16" tabindex="-1"></a><span class="co">#ウェブサイトから直接ダウンロードする場合</span></span>
-<span id="cb165-17"><a href="Chapter05-hypothsis.html#cb165-17" tabindex="-1"></a>url1<span class="ot">&lt;-</span><span class="st">&quot;https://yamamoto-masashi.github.io/DSlec/20201028sample.xls&quot;</span></span>
-<span id="cb165-18"><a href="Chapter05-hypothsis.html#cb165-18" tabindex="-1"></a><span class="co">#download.file(url1,destfile=&quot;20201028sample.xls&quot;)</span></span>
-<span id="cb165-19"><a href="Chapter05-hypothsis.html#cb165-19" tabindex="-1"></a><span class="fu">download.file</span>(url1,<span class="at">destfile=</span><span class="st">&quot;20201028sample.xls&quot;</span>,<span class="at">mode=</span><span class="st">&quot;wb&quot;</span>)</span>
-<span id="cb165-20"><a href="Chapter05-hypothsis.html#cb165-20" tabindex="-1"></a></span>
-<span id="cb165-21"><a href="Chapter05-hypothsis.html#cb165-21" tabindex="-1"></a><span class="co"># エクセルファイルの読み込み</span></span>
-<span id="cb165-22"><a href="Chapter05-hypothsis.html#cb165-22" tabindex="-1"></a><span class="co"># ヘッダ部分を読み飛ばしている</span></span>
-<span id="cb165-23"><a href="Chapter05-hypothsis.html#cb165-23" tabindex="-1"></a><span class="co"># sheet=1を変更することで別のシートも読める</span></span>
-<span id="cb165-24"><a href="Chapter05-hypothsis.html#cb165-24" tabindex="-1"></a>sampleDB<span class="ot">&lt;-</span><span class="fu">read_excel</span>(<span class="st">&quot;20201028sample.xls&quot;</span>,<span class="at">skip=</span><span class="dv">5</span>,<span class="at">sheet=</span><span class="dv">1</span>)</span>
-<span id="cb165-25"><a href="Chapter05-hypothsis.html#cb165-25" tabindex="-1"></a></span>
-<span id="cb165-26"><a href="Chapter05-hypothsis.html#cb165-26" tabindex="-1"></a><span class="co"># 列１と列２の名前を変更している。</span></span>
-<span id="cb165-27"><a href="Chapter05-hypothsis.html#cb165-27" tabindex="-1"></a><span class="fu">names</span>(sampleDB)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;prefcode&quot;</span>,<span class="st">&quot;prefnameJ&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="Chapter05-hypothsis.html#cb167-1" tabindex="-1"></a><span class="co"># 変数の対応関係</span></span>
+<span id="cb167-2"><a href="Chapter05-hypothsis.html#cb167-2" tabindex="-1"></a><span class="co"># A1101_総人口【人】  </span></span>
+<span id="cb167-3"><a href="Chapter05-hypothsis.html#cb167-3" tabindex="-1"></a><span class="co"># A1301_15歳未満人口【人】</span></span>
+<span id="cb167-4"><a href="Chapter05-hypothsis.html#cb167-4" tabindex="-1"></a><span class="co"># A1303_65歳以上人口【人】  </span></span>
+<span id="cb167-5"><a href="Chapter05-hypothsis.html#cb167-5" tabindex="-1"></a><span class="co"># B1101_ 総面積（北方地域及び竹島を除く）【ｈａ】   </span></span>
+<span id="cb167-6"><a href="Chapter05-hypothsis.html#cb167-6" tabindex="-1"></a><span class="co"># B1103_ 可住地面積【ｈａ】  </span></span>
+<span id="cb167-7"><a href="Chapter05-hypothsis.html#cb167-7" tabindex="-1"></a><span class="co"># B4107_ 雪日数（年間）【日】 </span></span>
+<span id="cb167-8"><a href="Chapter05-hypothsis.html#cb167-8" tabindex="-1"></a><span class="co"># B4108_ 日照時間（年間）【時間】   </span></span>
+<span id="cb167-9"><a href="Chapter05-hypothsis.html#cb167-9" tabindex="-1"></a><span class="co"># D110101_市町村数【‐】   </span></span>
+<span id="cb167-10"><a href="Chapter05-hypothsis.html#cb167-10" tabindex="-1"></a><span class="co"># E6102_大学数【校】  </span></span>
+<span id="cb167-11"><a href="Chapter05-hypothsis.html#cb167-11" tabindex="-1"></a><span class="co"># E6302_大学学生数【人】</span></span>
+<span id="cb167-12"><a href="Chapter05-hypothsis.html#cb167-12" tabindex="-1"></a><span class="co"># F610201_超過実労働時間数（男）【時間】   </span></span>
+<span id="cb167-13"><a href="Chapter05-hypothsis.html#cb167-13" tabindex="-1"></a><span class="co"># F610202_超過実労働時間数（女）【時間】   </span></span>
+<span id="cb167-14"><a href="Chapter05-hypothsis.html#cb167-14" tabindex="-1"></a><span class="co"># H110202_空き家数【戸】</span></span>
+<span id="cb167-15"><a href="Chapter05-hypothsis.html#cb167-15" tabindex="-1"></a></span>
+<span id="cb167-16"><a href="Chapter05-hypothsis.html#cb167-16" tabindex="-1"></a><span class="co">#ウェブサイトから直接ダウンロードする場合</span></span>
+<span id="cb167-17"><a href="Chapter05-hypothsis.html#cb167-17" tabindex="-1"></a>url1<span class="ot">&lt;-</span><span class="st">&quot;https://yamamoto-masashi.github.io/DSlec/20201028sample.xls&quot;</span></span>
+<span id="cb167-18"><a href="Chapter05-hypothsis.html#cb167-18" tabindex="-1"></a><span class="co">#download.file(url1,destfile=&quot;20201028sample.xls&quot;)</span></span>
+<span id="cb167-19"><a href="Chapter05-hypothsis.html#cb167-19" tabindex="-1"></a><span class="fu">download.file</span>(url1,<span class="at">destfile=</span><span class="st">&quot;20201028sample.xls&quot;</span>,<span class="at">mode=</span><span class="st">&quot;wb&quot;</span>)</span>
+<span id="cb167-20"><a href="Chapter05-hypothsis.html#cb167-20" tabindex="-1"></a></span>
+<span id="cb167-21"><a href="Chapter05-hypothsis.html#cb167-21" tabindex="-1"></a><span class="co"># エクセルファイルの読み込み</span></span>
+<span id="cb167-22"><a href="Chapter05-hypothsis.html#cb167-22" tabindex="-1"></a><span class="co"># ヘッダ部分を読み飛ばしている</span></span>
+<span id="cb167-23"><a href="Chapter05-hypothsis.html#cb167-23" tabindex="-1"></a><span class="co"># sheet=1を変更することで別のシートも読める</span></span>
+<span id="cb167-24"><a href="Chapter05-hypothsis.html#cb167-24" tabindex="-1"></a>sampleDB<span class="ot">&lt;-</span><span class="fu">read_excel</span>(<span class="st">&quot;20201028sample.xls&quot;</span>,<span class="at">skip=</span><span class="dv">5</span>,<span class="at">sheet=</span><span class="dv">1</span>)</span>
+<span id="cb167-25"><a href="Chapter05-hypothsis.html#cb167-25" tabindex="-1"></a></span>
+<span id="cb167-26"><a href="Chapter05-hypothsis.html#cb167-26" tabindex="-1"></a><span class="co"># 列１と列２の名前を変更している。</span></span>
+<span id="cb167-27"><a href="Chapter05-hypothsis.html#cb167-27" tabindex="-1"></a><span class="fu">names</span>(sampleDB)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;prefcode&quot;</span>,<span class="st">&quot;prefnameJ&quot;</span>)</span></code></pre></div>
 </div>
 <div id="mean_dev_sd" class="section level2 hasAnchor" number="6.2">
 <h2><span class="header-section-number">6.2</span> 平均・分散・標準偏差<a href="Chapter05-hypothsis.html#mean_dev_sd" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>都道府県別の市町村数を例に基本統計量の計算方法を示す。</p>
-<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="Chapter05-hypothsis.html#cb166-1" tabindex="-1"></a><span class="co">#average</span></span>
-<span id="cb166-2"><a href="Chapter05-hypothsis.html#cb166-2" tabindex="-1"></a><span class="fu">mean</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
+<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="Chapter05-hypothsis.html#cb168-1" tabindex="-1"></a><span class="co">#average</span></span>
+<span id="cb168-2"><a href="Chapter05-hypothsis.html#cb168-2" tabindex="-1"></a><span class="fu">mean</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
 <pre><code>## [1] 37</code></pre>
-<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="Chapter05-hypothsis.html#cb168-1" tabindex="-1"></a><span class="co">#sum</span></span>
-<span id="cb168-2"><a href="Chapter05-hypothsis.html#cb168-2" tabindex="-1"></a><span class="fu">sum</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
+<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="Chapter05-hypothsis.html#cb170-1" tabindex="-1"></a><span class="co">#sum</span></span>
+<span id="cb170-2"><a href="Chapter05-hypothsis.html#cb170-2" tabindex="-1"></a><span class="fu">sum</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
 <pre><code>## [1] 1741</code></pre>
-<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="Chapter05-hypothsis.html#cb170-1" tabindex="-1"></a><span class="co">#count</span></span>
-<span id="cb170-2"><a href="Chapter05-hypothsis.html#cb170-2" tabindex="-1"></a><span class="fu">length</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
+<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="Chapter05-hypothsis.html#cb172-1" tabindex="-1"></a><span class="co">#count</span></span>
+<span id="cb172-2"><a href="Chapter05-hypothsis.html#cb172-2" tabindex="-1"></a><span class="fu">length</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
 <pre><code>## [1] 47</code></pre>
-<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="Chapter05-hypothsis.html#cb172-1" tabindex="-1"></a><span class="co">#median</span></span>
-<span id="cb172-2"><a href="Chapter05-hypothsis.html#cb172-2" tabindex="-1"></a><span class="fu">median</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="Chapter05-hypothsis.html#cb174-1" tabindex="-1"></a><span class="co">#median</span></span>
+<span id="cb174-2"><a href="Chapter05-hypothsis.html#cb174-2" tabindex="-1"></a><span class="fu">median</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
 <pre><code>## [1] 33</code></pre>
-<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="Chapter05-hypothsis.html#cb174-1" tabindex="-1"></a><span class="co">#maximum value</span></span>
-<span id="cb174-2"><a href="Chapter05-hypothsis.html#cb174-2" tabindex="-1"></a><span class="fu">max</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="Chapter05-hypothsis.html#cb176-1" tabindex="-1"></a><span class="co">#maximum value</span></span>
+<span id="cb176-2"><a href="Chapter05-hypothsis.html#cb176-2" tabindex="-1"></a><span class="fu">max</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
 <pre><code>## [1] 179</code></pre>
-<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="Chapter05-hypothsis.html#cb176-1" tabindex="-1"></a><span class="co">#minimum value</span></span>
-<span id="cb176-2"><a href="Chapter05-hypothsis.html#cb176-2" tabindex="-1"></a><span class="fu">min</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
+<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="Chapter05-hypothsis.html#cb178-1" tabindex="-1"></a><span class="co">#minimum value</span></span>
+<span id="cb178-2"><a href="Chapter05-hypothsis.html#cb178-2" tabindex="-1"></a><span class="fu">min</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
 <pre><code>## [1] 15</code></pre>
-<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="Chapter05-hypothsis.html#cb178-1" tabindex="-1"></a><span class="co"># frequency distribution</span></span>
-<span id="cb178-2"><a href="Chapter05-hypothsis.html#cb178-2" tabindex="-1"></a><span class="fu">table</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="Chapter05-hypothsis.html#cb180-1" tabindex="-1"></a><span class="co"># frequency distribution</span></span>
+<span id="cb180-2"><a href="Chapter05-hypothsis.html#cb180-2" tabindex="-1"></a><span class="fu">table</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
 <pre><code>## 
 ##  15  17  18  19  20  21  23  24  25  26  27  29  30  33  34  35  39  40  41  42 
 ##   1   2   1   5   2   1   1   1   2   2   2   1   2   2   1   4   1   1   2   1 
 ##  43  44  45  54  59  60  62  63  77 179 
 ##   2   1   1   2   1   1   1   1   1   1</code></pre>
-<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="Chapter05-hypothsis.html#cb180-1" tabindex="-1"></a><span class="co">#histgram using base</span></span>
-<span id="cb180-2"><a href="Chapter05-hypothsis.html#cb180-2" tabindex="-1"></a><span class="fu">hist</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
+<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="Chapter05-hypothsis.html#cb182-1" tabindex="-1"></a><span class="co">#histgram using base</span></span>
+<span id="cb182-2"><a href="Chapter05-hypothsis.html#cb182-2" tabindex="-1"></a><span class="fu">hist</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
 <p><img src="book_filename_files/figure-html/statistics-1.png" width="672" /></p>
-<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="Chapter05-hypothsis.html#cb181-1" tabindex="-1"></a><span class="co">#histgram using ggplot2</span></span>
-<span id="cb181-2"><a href="Chapter05-hypothsis.html#cb181-2" tabindex="-1"></a>sampleDB <span class="sc">%&gt;%</span></span>
-<span id="cb181-3"><a href="Chapter05-hypothsis.html#cb181-3" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
-<span id="cb181-4"><a href="Chapter05-hypothsis.html#cb181-4" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>D110101,<span class="at">fill=</span><span class="fu">factor</span>(Kanto)),</span>
-<span id="cb181-5"><a href="Chapter05-hypothsis.html#cb181-5" tabindex="-1"></a>                 <span class="at">bins=</span><span class="dv">80</span>,<span class="at">position=</span><span class="st">&quot;nudge&quot;</span>,<span class="at">alpha=</span><span class="fl">0.7</span>)<span class="sc">+</span></span>
-<span id="cb181-6"><a href="Chapter05-hypothsis.html#cb181-6" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x=</span>D110101,<span class="at">y=</span>..count..),<span class="at">fill=</span><span class="st">&quot;blue&quot;</span>, <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb181-7"><a href="Chapter05-hypothsis.html#cb181-7" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill=</span><span class="st">&quot;Kanto dummy&quot;</span>)<span class="sc">+</span><span class="fu">xlab</span>(<span class="st">&quot;Number of municipalities&quot;</span>)<span class="sc">+</span></span>
-<span id="cb181-8"><a href="Chapter05-hypothsis.html#cb181-8" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">33</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="Chapter05-hypothsis.html#cb183-1" tabindex="-1"></a><span class="co">#histgram using ggplot2</span></span>
+<span id="cb183-2"><a href="Chapter05-hypothsis.html#cb183-2" tabindex="-1"></a>sampleDB <span class="sc">%&gt;%</span></span>
+<span id="cb183-3"><a href="Chapter05-hypothsis.html#cb183-3" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb183-4"><a href="Chapter05-hypothsis.html#cb183-4" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>D110101,<span class="at">fill=</span><span class="fu">factor</span>(Kanto)),</span>
+<span id="cb183-5"><a href="Chapter05-hypothsis.html#cb183-5" tabindex="-1"></a>                 <span class="at">bins=</span><span class="dv">80</span>,<span class="at">position=</span><span class="st">&quot;nudge&quot;</span>,<span class="at">alpha=</span><span class="fl">0.7</span>)<span class="sc">+</span></span>
+<span id="cb183-6"><a href="Chapter05-hypothsis.html#cb183-6" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x=</span>D110101,<span class="at">y=</span>..count..),<span class="at">fill=</span><span class="st">&quot;blue&quot;</span>, <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb183-7"><a href="Chapter05-hypothsis.html#cb183-7" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill=</span><span class="st">&quot;Kanto dummy&quot;</span>)<span class="sc">+</span><span class="fu">xlab</span>(<span class="st">&quot;Number of municipalities&quot;</span>)<span class="sc">+</span></span>
+<span id="cb183-8"><a href="Chapter05-hypothsis.html#cb183-8" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">33</span>)</span></code></pre></div>
 <p><img src="book_filename_files/figure-html/statistics-2.png" width="672" /></p>
-<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="Chapter05-hypothsis.html#cb182-1" tabindex="-1"></a><span class="co">#square root</span></span>
-<span id="cb182-2"><a href="Chapter05-hypothsis.html#cb182-2" tabindex="-1"></a><span class="fu">sqrt</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="Chapter05-hypothsis.html#cb184-1" tabindex="-1"></a><span class="co">#square root</span></span>
+<span id="cb184-2"><a href="Chapter05-hypothsis.html#cb184-2" tabindex="-1"></a><span class="fu">sqrt</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
 <pre><code>##  [1] 13.4  6.3  5.7  5.9  5.0  5.9  7.7  6.6  5.0  5.9  7.9  7.3  7.9  5.7  5.5
 ## [16]  3.9  4.4  4.1  5.2  8.8  6.5  5.9  7.3  5.4  4.4  5.1  6.6  6.4  6.2  5.5
 ## [31]  4.4  4.4  5.2  4.8  4.4  4.9  4.1  4.5  5.8  7.7  4.5  4.6  6.7  4.2  5.1
@@ -361,39 +361,39 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>標本分散: <span class="math inline">\(s_{xx}=\frac{1}{n}\sum_{i=1}^{n}(x_i-\overline{x})^2\)</span></p>
 <p>不偏分散: <span class="math inline">\(\sigma_xx =\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\overline{x})^2=\frac{n}{n-1}\frac{1}{n}\sum_{i=1}^{n}(x_i-\overline{x})^2=\frac{n}{n-1}s_{xx}\)</span></p>
 <p>推定量としては、不偏分散が望ましい。なお、分散の平方根を標準偏差(standard deviation)と呼ぶ。</p>
-<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="Chapter05-hypothsis.html#cb184-1" tabindex="-1"></a><span class="co">#不偏分散を求める</span></span>
-<span id="cb184-2"><a href="Chapter05-hypothsis.html#cb184-2" tabindex="-1"></a><span class="fu">var</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="Chapter05-hypothsis.html#cb186-1" tabindex="-1"></a><span class="co">#不偏分散を求める</span></span>
+<span id="cb186-2"><a href="Chapter05-hypothsis.html#cb186-2" tabindex="-1"></a><span class="fu">var</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
 <pre><code>## [1] 659</code></pre>
-<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="Chapter05-hypothsis.html#cb186-1" tabindex="-1"></a><span class="co">#標準偏差を求める</span></span>
-<span id="cb186-2"><a href="Chapter05-hypothsis.html#cb186-2" tabindex="-1"></a><span class="fu">sd</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="Chapter05-hypothsis.html#cb188-1" tabindex="-1"></a><span class="co">#標準偏差を求める</span></span>
+<span id="cb188-2"><a href="Chapter05-hypothsis.html#cb188-2" tabindex="-1"></a><span class="fu">sd</span>(sampleDB<span class="sc">$</span>D110101)</span></code></pre></div>
 <pre><code>## [1] 26</code></pre>
 </div>
 <div id="Diff_sd" class="section level2 hasAnchor" number="6.3">
 <h2><span class="header-section-number">6.3</span> 分散・標準偏差が大きいことのイメージ<a href="Chapter05-hypothsis.html#Diff_sd" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="Chapter05-hypothsis.html#cb188-1" tabindex="-1"></a>largeV<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">25</span></span>
-<span id="cb188-2"><a href="Chapter05-hypothsis.html#cb188-2" tabindex="-1"></a></span>
-<span id="cb188-3"><a href="Chapter05-hypothsis.html#cb188-3" tabindex="-1"></a><span class="fu">mean</span>(largeV)</span></code></pre></div>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="Chapter05-hypothsis.html#cb190-1" tabindex="-1"></a>largeV<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">25</span></span>
+<span id="cb190-2"><a href="Chapter05-hypothsis.html#cb190-2" tabindex="-1"></a></span>
+<span id="cb190-3"><a href="Chapter05-hypothsis.html#cb190-3" tabindex="-1"></a><span class="fu">mean</span>(largeV)</span></code></pre></div>
 <pre><code>## [1] 13</code></pre>
-<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="Chapter05-hypothsis.html#cb190-1" tabindex="-1"></a><span class="fu">sd</span>(largeV)</span></code></pre></div>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="Chapter05-hypothsis.html#cb192-1" tabindex="-1"></a><span class="fu">sd</span>(largeV)</span></code></pre></div>
 <pre><code>## [1] 7.4</code></pre>
-<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="Chapter05-hypothsis.html#cb192-1" tabindex="-1"></a>smallV<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>,<span class="dv">16</span>,</span>
-<span id="cb192-2"><a href="Chapter05-hypothsis.html#cb192-2" tabindex="-1"></a>          <span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>,<span class="dv">16</span>,</span>
-<span id="cb192-3"><a href="Chapter05-hypothsis.html#cb192-3" tabindex="-1"></a>          <span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>,<span class="dv">16</span>,</span>
-<span id="cb192-4"><a href="Chapter05-hypothsis.html#cb192-4" tabindex="-1"></a>          <span class="dv">13</span>,<span class="dv">13</span>,<span class="dv">13</span>,<span class="dv">13</span>)</span>
-<span id="cb192-5"><a href="Chapter05-hypothsis.html#cb192-5" tabindex="-1"></a></span>
-<span id="cb192-6"><a href="Chapter05-hypothsis.html#cb192-6" tabindex="-1"></a><span class="fu">mean</span>(smallV)</span></code></pre></div>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="Chapter05-hypothsis.html#cb194-1" tabindex="-1"></a>smallV<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>,<span class="dv">16</span>,</span>
+<span id="cb194-2"><a href="Chapter05-hypothsis.html#cb194-2" tabindex="-1"></a>          <span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>,<span class="dv">16</span>,</span>
+<span id="cb194-3"><a href="Chapter05-hypothsis.html#cb194-3" tabindex="-1"></a>          <span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>,<span class="dv">16</span>,</span>
+<span id="cb194-4"><a href="Chapter05-hypothsis.html#cb194-4" tabindex="-1"></a>          <span class="dv">13</span>,<span class="dv">13</span>,<span class="dv">13</span>,<span class="dv">13</span>)</span>
+<span id="cb194-5"><a href="Chapter05-hypothsis.html#cb194-5" tabindex="-1"></a></span>
+<span id="cb194-6"><a href="Chapter05-hypothsis.html#cb194-6" tabindex="-1"></a><span class="fu">mean</span>(smallV)</span></code></pre></div>
 <pre><code>## [1] 13</code></pre>
-<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="Chapter05-hypothsis.html#cb194-1" tabindex="-1"></a><span class="fu">sd</span>(smallV)</span></code></pre></div>
+<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="Chapter05-hypothsis.html#cb196-1" tabindex="-1"></a><span class="fu">sd</span>(smallV)</span></code></pre></div>
 <pre><code>## [1] 1.9</code></pre>
-<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="Chapter05-hypothsis.html#cb196-1" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dnorm</span>(x,<span class="at">mean=</span><span class="fu">mean</span>(largeV),<span class="at">sd=</span><span class="fu">sd</span>(largeV)),<span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.25</span>),<span class="at">from=</span><span class="dv">1</span>,<span class="at">to=</span><span class="dv">25</span>)</span>
-<span id="cb196-2"><a href="Chapter05-hypothsis.html#cb196-2" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dnorm</span>(x,<span class="at">mean=</span><span class="fu">mean</span>(smallV),<span class="at">sd=</span><span class="fu">sd</span>(smallV)),<span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.25</span>),<span class="at">from=</span><span class="dv">1</span>,<span class="at">to=</span><span class="dv">25</span>,<span class="at">add=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="Chapter05-hypothsis.html#cb198-1" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dnorm</span>(x,<span class="at">mean=</span><span class="fu">mean</span>(largeV),<span class="at">sd=</span><span class="fu">sd</span>(largeV)),<span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.25</span>),<span class="at">from=</span><span class="dv">1</span>,<span class="at">to=</span><span class="dv">25</span>)</span>
+<span id="cb198-2"><a href="Chapter05-hypothsis.html#cb198-2" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dnorm</span>(x,<span class="at">mean=</span><span class="fu">mean</span>(smallV),<span class="at">sd=</span><span class="fu">sd</span>(smallV)),<span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.25</span>),<span class="at">from=</span><span class="dv">1</span>,<span class="at">to=</span><span class="dv">25</span>,<span class="at">add=</span><span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="book_filename_files/figure-html/variance-1.png" width="672" /></p>
-<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="Chapter05-hypothsis.html#cb197-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span><span class="fu">data_frame</span>(<span class="at">X=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">25</span>)),<span class="fu">aes</span>(<span class="at">x=</span>X))<span class="sc">+</span></span>
-<span id="cb197-2"><a href="Chapter05-hypothsis.html#cb197-2" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun=</span>dnorm,<span class="at">args=</span><span class="fu">list</span>(<span class="at">mean=</span><span class="fu">mean</span>(largeV),</span>
-<span id="cb197-3"><a href="Chapter05-hypothsis.html#cb197-3" tabindex="-1"></a>                                    <span class="at">sd=</span><span class="fu">sd</span>(largeV)),<span class="at">color=</span><span class="st">&quot;red&quot;</span>)<span class="sc">+</span></span>
-<span id="cb197-4"><a href="Chapter05-hypothsis.html#cb197-4" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun=</span>dnorm,<span class="at">args=</span><span class="fu">list</span>(<span class="at">mean=</span><span class="fu">mean</span>(smallV),</span>
-<span id="cb197-5"><a href="Chapter05-hypothsis.html#cb197-5" tabindex="-1"></a>                                    <span class="at">sd=</span><span class="fu">sd</span>(smallV)),<span class="at">color=</span><span class="st">&quot;blue&quot;</span>,<span class="at">na.rm=</span><span class="cn">TRUE</span>)<span class="sc">+</span></span>
-<span id="cb197-6"><a href="Chapter05-hypothsis.html#cb197-6" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;density&quot;</span>)<span class="sc">+</span><span class="fu">ylim</span>(<span class="fl">0.01</span>,<span class="fl">0.25</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="Chapter05-hypothsis.html#cb199-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span><span class="fu">data_frame</span>(<span class="at">X=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">25</span>)),<span class="fu">aes</span>(<span class="at">x=</span>X))<span class="sc">+</span></span>
+<span id="cb199-2"><a href="Chapter05-hypothsis.html#cb199-2" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun=</span>dnorm,<span class="at">args=</span><span class="fu">list</span>(<span class="at">mean=</span><span class="fu">mean</span>(largeV),</span>
+<span id="cb199-3"><a href="Chapter05-hypothsis.html#cb199-3" tabindex="-1"></a>                                    <span class="at">sd=</span><span class="fu">sd</span>(largeV)),<span class="at">color=</span><span class="st">&quot;red&quot;</span>)<span class="sc">+</span></span>
+<span id="cb199-4"><a href="Chapter05-hypothsis.html#cb199-4" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun=</span>dnorm,<span class="at">args=</span><span class="fu">list</span>(<span class="at">mean=</span><span class="fu">mean</span>(smallV),</span>
+<span id="cb199-5"><a href="Chapter05-hypothsis.html#cb199-5" tabindex="-1"></a>                                    <span class="at">sd=</span><span class="fu">sd</span>(smallV)),<span class="at">color=</span><span class="st">&quot;blue&quot;</span>,<span class="at">na.rm=</span><span class="cn">TRUE</span>)<span class="sc">+</span></span>
+<span id="cb199-6"><a href="Chapter05-hypothsis.html#cb199-6" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;density&quot;</span>)<span class="sc">+</span><span class="fu">ylim</span>(<span class="fl">0.01</span>,<span class="fl">0.25</span>)</span></code></pre></div>
 <pre><code>## Warning: `data_frame()` was deprecated in tibble 1.1.0.
 ## ℹ Please use `tibble()` instead.
 ## This warning is displayed once every 8 hours.
@@ -403,7 +403,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="データフレームの要約" class="section level2 hasAnchor" number="6.4">
 <h2><span class="header-section-number">6.4</span> データフレームの要約<a href="Chapter05-hypothsis.html#データフレームの要約" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="Chapter05-hypothsis.html#cb199-1" tabindex="-1"></a><span class="fu">summary</span>(sampleDB)</span></code></pre></div>
+<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="Chapter05-hypothsis.html#cb201-1" tabindex="-1"></a><span class="fu">summary</span>(sampleDB)</span></code></pre></div>
 <pre><code>##     prefcode   prefnameJ             A1101              A1301        
 ##  Min.   : 1   Length:47          Min.   :  560000   Min.   :  71000  
 ##  1st Qu.:12   Class :character   1st Qu.: 1085500   1st Qu.: 132000  
@@ -441,9 +441,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>ただし、</p>
 <p><span class="math display">\[s_{xy}=\frac{1}{n}\sum_{i=1}^{n}\left(x_i-\overline{x}\right)\left(y_i-\overline{y}\right)\]</span></p>
 <p>は共分散である。</p>
-<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="Chapter05-hypothsis.html#cb201-1" tabindex="-1"></a><span class="co"># 二つのデータは無相関であるという帰無仮説を検定</span></span>
-<span id="cb201-2"><a href="Chapter05-hypothsis.html#cb201-2" tabindex="-1"></a><span class="co"># 市町村数と都道府県の総面接</span></span>
-<span id="cb201-3"><a href="Chapter05-hypothsis.html#cb201-3" tabindex="-1"></a><span class="fu">cor.test</span>(sampleDB<span class="sc">$</span>D110101,sampleDB<span class="sc">$</span>B1101)</span></code></pre></div>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="Chapter05-hypothsis.html#cb203-1" tabindex="-1"></a><span class="co"># 二つのデータは無相関であるという帰無仮説を検定</span></span>
+<span id="cb203-2"><a href="Chapter05-hypothsis.html#cb203-2" tabindex="-1"></a><span class="co"># 市町村数と都道府県の総面接</span></span>
+<span id="cb203-3"><a href="Chapter05-hypothsis.html#cb203-3" tabindex="-1"></a><span class="fu">cor.test</span>(sampleDB<span class="sc">$</span>D110101,sampleDB<span class="sc">$</span>B1101)</span></code></pre></div>
 <pre><code>## 
 ##  Pearson&#39;s product-moment correlation
 ## 
@@ -455,8 +455,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## sample estimates:
 ##  cor 
 ## 0.83</code></pre>
-<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="Chapter05-hypothsis.html#cb203-1" tabindex="-1"></a><span class="co"># 市町村数と都道府県の可住地面接</span></span>
-<span id="cb203-2"><a href="Chapter05-hypothsis.html#cb203-2" tabindex="-1"></a><span class="fu">cor.test</span>(sampleDB<span class="sc">$</span>D110101,sampleDB<span class="sc">$</span>B1103)</span></code></pre></div>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="Chapter05-hypothsis.html#cb205-1" tabindex="-1"></a><span class="co"># 市町村数と都道府県の可住地面接</span></span>
+<span id="cb205-2"><a href="Chapter05-hypothsis.html#cb205-2" tabindex="-1"></a><span class="fu">cor.test</span>(sampleDB<span class="sc">$</span>D110101,sampleDB<span class="sc">$</span>B1103)</span></code></pre></div>
 <pre><code>## 
 ##  Pearson&#39;s product-moment correlation
 ## 
@@ -468,22 +468,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## sample estimates:
 ##  cor 
 ## 0.87</code></pre>
-<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="Chapter05-hypothsis.html#cb205-1" tabindex="-1"></a><span class="co"># 相関関係の可視化</span></span>
-<span id="cb205-2"><a href="Chapter05-hypothsis.html#cb205-2" tabindex="-1"></a><span class="fu">plot</span>(sampleDB<span class="sc">$</span>D110101,sampleDB<span class="sc">$</span>B1101)</span></code></pre></div>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="Chapter05-hypothsis.html#cb207-1" tabindex="-1"></a><span class="co"># 相関関係の可視化</span></span>
+<span id="cb207-2"><a href="Chapter05-hypothsis.html#cb207-2" tabindex="-1"></a><span class="fu">plot</span>(sampleDB<span class="sc">$</span>D110101,sampleDB<span class="sc">$</span>B1101)</span></code></pre></div>
 <p><img src="book_filename_files/figure-html/statistics4-1.png" width="672" /></p>
-<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="Chapter05-hypothsis.html#cb206-1" tabindex="-1"></a><span class="co"># ggplotによる可視化</span></span>
-<span id="cb206-2"><a href="Chapter05-hypothsis.html#cb206-2" tabindex="-1"></a>sampleDB <span class="sc">%&gt;%</span></span>
-<span id="cb206-3"><a href="Chapter05-hypothsis.html#cb206-3" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
-<span id="cb206-4"><a href="Chapter05-hypothsis.html#cb206-4" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>D110101,<span class="at">y=</span>B1101<span class="sc">/</span><span class="dv">1000</span>,<span class="at">color=</span><span class="fu">factor</span>(Kanto)))<span class="sc">+</span></span>
-<span id="cb206-5"><a href="Chapter05-hypothsis.html#cb206-5" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Number of municipalities&quot;</span>)<span class="sc">+</span><span class="fu">ylab</span>(<span class="st">&quot;Total Area (thousand ha)&quot;</span>)<span class="sc">+</span></span>
-<span id="cb206-6"><a href="Chapter05-hypothsis.html#cb206-6" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color=</span><span class="st">&quot;Kanto Dummy&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="Chapter05-hypothsis.html#cb208-1" tabindex="-1"></a><span class="co"># ggplotによる可視化</span></span>
+<span id="cb208-2"><a href="Chapter05-hypothsis.html#cb208-2" tabindex="-1"></a>sampleDB <span class="sc">%&gt;%</span></span>
+<span id="cb208-3"><a href="Chapter05-hypothsis.html#cb208-3" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb208-4"><a href="Chapter05-hypothsis.html#cb208-4" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>D110101,<span class="at">y=</span>B1101<span class="sc">/</span><span class="dv">1000</span>,<span class="at">color=</span><span class="fu">factor</span>(Kanto)))<span class="sc">+</span></span>
+<span id="cb208-5"><a href="Chapter05-hypothsis.html#cb208-5" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Number of municipalities&quot;</span>)<span class="sc">+</span><span class="fu">ylab</span>(<span class="st">&quot;Total Area (thousand ha)&quot;</span>)<span class="sc">+</span></span>
+<span id="cb208-6"><a href="Chapter05-hypothsis.html#cb208-6" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color=</span><span class="st">&quot;Kanto Dummy&quot;</span>)</span></code></pre></div>
 <p><img src="book_filename_files/figure-html/statistics4-2.png" width="672" /></p>
-<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="Chapter05-hypothsis.html#cb207-1" tabindex="-1"></a><span class="co"># 相関係数を３つ表示</span></span>
-<span id="cb207-2"><a href="Chapter05-hypothsis.html#cb207-2" tabindex="-1"></a>sampleDB <span class="sc">%&gt;%</span></span>
-<span id="cb207-3"><a href="Chapter05-hypothsis.html#cb207-3" tabindex="-1"></a>  <span class="fu">select</span>(D110101,B1101,B1103)<span class="ot">-&gt;</span>sampleDBsmall</span>
-<span id="cb207-4"><a href="Chapter05-hypothsis.html#cb207-4" tabindex="-1"></a></span>
-<span id="cb207-5"><a href="Chapter05-hypothsis.html#cb207-5" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
-<span id="cb207-6"><a href="Chapter05-hypothsis.html#cb207-6" tabindex="-1"></a><span class="fu">pairs.panels</span>(sampleDBsmall)</span></code></pre></div>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="Chapter05-hypothsis.html#cb209-1" tabindex="-1"></a><span class="co"># 相関係数を３つ表示</span></span>
+<span id="cb209-2"><a href="Chapter05-hypothsis.html#cb209-2" tabindex="-1"></a>sampleDB <span class="sc">%&gt;%</span></span>
+<span id="cb209-3"><a href="Chapter05-hypothsis.html#cb209-3" tabindex="-1"></a>  <span class="fu">select</span>(D110101,B1101,B1103)<span class="ot">-&gt;</span>sampleDBsmall</span>
+<span id="cb209-4"><a href="Chapter05-hypothsis.html#cb209-4" tabindex="-1"></a></span>
+<span id="cb209-5"><a href="Chapter05-hypothsis.html#cb209-5" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb209-6"><a href="Chapter05-hypothsis.html#cb209-6" tabindex="-1"></a><span class="fu">pairs.panels</span>(sampleDBsmall)</span></code></pre></div>
 <p><img src="book_filename_files/figure-html/statistics4-3.png" width="672" /></p>
 </div>
 <div id="hypothesis" class="section level2 hasAnchor" number="6.6">
@@ -504,13 +504,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>対立仮説：<span class="math inline">\(\mu \neq 15\)</span></p></li>
 </ul>
 <p>を検定しよう。</p>
-<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="Chapter05-hypothsis.html#cb208-1" tabindex="-1"></a><span class="co">#自由度=24のt分布</span></span>
-<span id="cb208-2"><a href="Chapter05-hypothsis.html#cb208-2" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dt</span>(x,<span class="dv">24</span>),<span class="sc">-</span><span class="dv">3</span>,<span class="dv">3</span>)</span>
-<span id="cb208-3"><a href="Chapter05-hypothsis.html#cb208-3" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fu">qt</span>(<span class="fl">0.025</span>,<span class="dv">24</span>)) <span class="co"># 2.5%のライン</span></span>
-<span id="cb208-4"><a href="Chapter05-hypothsis.html#cb208-4" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fu">qt</span>(<span class="fl">0.975</span>,<span class="dv">24</span>)) <span class="co"># 97.5%のライン</span></span></code></pre></div>
+<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="Chapter05-hypothsis.html#cb210-1" tabindex="-1"></a><span class="co">#自由度=24のt分布</span></span>
+<span id="cb210-2"><a href="Chapter05-hypothsis.html#cb210-2" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dt</span>(x,<span class="dv">24</span>),<span class="sc">-</span><span class="dv">3</span>,<span class="dv">3</span>)</span>
+<span id="cb210-3"><a href="Chapter05-hypothsis.html#cb210-3" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fu">qt</span>(<span class="fl">0.025</span>,<span class="dv">24</span>)) <span class="co"># 2.5%のライン</span></span>
+<span id="cb210-4"><a href="Chapter05-hypothsis.html#cb210-4" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fu">qt</span>(<span class="fl">0.975</span>,<span class="dv">24</span>)) <span class="co"># 97.5%のライン</span></span></code></pre></div>
 <p><img src="book_filename_files/figure-html/test1-1.png" width="672" /></p>
-<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="Chapter05-hypothsis.html#cb209-1" tabindex="-1"></a><span class="co"># t検定を実施するコマンド</span></span>
-<span id="cb209-2"><a href="Chapter05-hypothsis.html#cb209-2" tabindex="-1"></a><span class="fu">t.test</span>(smallV,<span class="at">mu=</span><span class="dv">15</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="Chapter05-hypothsis.html#cb211-1" tabindex="-1"></a><span class="co"># t検定を実施するコマンド</span></span>
+<span id="cb211-2"><a href="Chapter05-hypothsis.html#cb211-2" tabindex="-1"></a><span class="fu">t.test</span>(smallV,<span class="at">mu=</span><span class="dv">15</span>)</span></code></pre></div>
 <pre><code>## 
 ##  One Sample t-test
 ## 

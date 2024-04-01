@@ -1,0 +1,107 @@
+---
+title: "Git and Github"
+author: "Name"
+date: "2023-09-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#https://medium.com/@YajieXu/synchronize-your-rstudio-project-with-github-7f0e02cd2ed9
+```
+
+## GitとGithubとは
+Gitとは分散型バージョン管理システムの一種であり、ファイルの変更記録を保存するシステムです。  
+Githubはこれらのファイルをバックアップ、共有、共同開発するためのオンライン上に保存するクラウドベースのプラットフォームサービスです。  
+
+## Roadmap
+-1. Set-up
+-2. プロジェクト作成
+-3. 同期
+-4. 変更の記録
+
+## Setup
+### RとR studioのインストール
+### Gitのインストールとrstudio上のアクティベート
+Gitのインストール後、rstudio上でGitの設定を行います。
+
+Tools->Global Options->Git/SVN
+
+次にGitHubのアカウントを作成します。
+
+## Projectの作成
+### GitHub上でレポジトリの作成
+初心者向けにHTTPSが提案されます。詳しくはhttps://happygitwithr.com/https-pat.htmlを参照
+
+### RStudio上でプロジェクトの作成
+File->New Project
+
+## 同期
+### Git Bashでターミナルを開く
+Rstudioのターミナルタブから"Terminal Options"を選択
+Git Bashで新しいターミナルを開く設定を行う
+以下の文章をターミナルで実行
+```{r echo=FALSE}
+# Initiate the upstream tracking of the project on the GitHub repo 
+# git remote add origin https://github.com/Yajie-Xu/Test-Repo.git
+# >>> error: remote origin already exists.
+
+# Pull all files from the GitHub repo (typically just readme, license, gitignore) 
+git pull origin main # OR git pull origin master
+
+# >>> From https://github.com/Yajie-Xu/Test-Repo
+# >>>  * branch            main       -> FETCH_HEAD
+# >>> Already up to date.
+
+# Set upstream (set up GitHub repo to track local changes)
+git push -u origin main # OR git push -u origin master
+# >>> warning: git-credential-manager-core was renamed to git-credential-manager
+# >>> warning: see https://aka.ms/gcm/rename for more information
+# >>> Everything up-to-date
+# >>> branch 'main' set up to track 'origin/main'.
+
+# Push all branches (i.e. refs under refs/heads/); cannot be used with other <refspec>
+git push --all
+# >>> warning: git-credential-manager-core was renamed to git-credential-manager
+# >>> warning: see https://aka.ms/gcm/rename for more information
+# >>> Everything up-to-date
+
+# show current remote repository to verify the location of the current repository 
+git remote -v show
+
+#---------------optional-----------------
+# Add username and email address
+git config --global user.name "YourName"
+git config --global user.email youremail@example.com
+git config --global --list
+
+# OR
+# install.packages("usethis")
+library(usethis)
+use_git_config(user.name = "YourName", user.email = "youremail@example.com")
+
+# Check out more usage on git config
+git config --global
+```
+
+```{r}
+#remove origin
+
+git remote rm origin
+#add new origin like Azure for me via HTTPS
+
+git remote add origin https://USER@dev.azure.com/USER/PROJECT/_git/REPONAME
+#push your local repro
+
+git push -u origin --all
+```
+
+### Git Credential Manager
+Git push -u origin main とGit push -allを実行したときに警告が出た場合、Git Credential Manager Renameに従い、次の操作を行う。
+```{r}
+git config --show-origin --get-all credential.helper
+# >>> file:D:/Software/Program/Git/Git/Git/etc/gitconfig      manager
+# >>> file:C:/Users/Yajie-Xu/.gitconfig manager-corer
+```
+PCのpath barにFile:C:/User...を貼り付け、Enter
+.gitconfigファイルが出てくるはず。

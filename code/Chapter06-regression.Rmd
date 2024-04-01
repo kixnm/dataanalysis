@@ -1,0 +1,291 @@
+# Rによる重回帰分析
+
+
+```{r packages, warning=FALSE, message=FALSE}
+#install.packages("gt")
+#install.packages("modelsummary")
+
+# ライブラリコマンドでの読み込みは毎回必要
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(foreign)
+library(stargazer)
+library(gt)
+library(modelsummary)
+
+
+# Macユーザ向けの日本語フォント
+#theme_set(theme_gray(base_size = 10, base_family = "HiraginoSans-W3"))
+
+#ウィンドウズユーザー向けの日本語フォント
+#windowsFonts(YuGothic = windowsFont("Yu Gothic"))
+#theme_set(theme_gray(base_size = 10, base_family = "YuGothic"))
+
+
+getwd() # 現在の作業ディレクトリを確認
+setwd("D:/Offline_folder/Tokai/Tokai_DataAnalysis/dataanalysis") # 作業ディレクトリの変更
+
+```
+
+## 最小二乗法(Ordinary Least Squere Method)とは
+
+観測されたデータ$(X,Y)$に対して、
+
+$$Y=a+bX$$
+
+という直線を当てはめることを考える。データが現実を反映しているとすれば、当てはまりが良ければ良いほど、求められた直線は現実のメカニズムを反映していることになる。もし、完全に当てはまったとすれば問題はないがそのようなことはまずないので、当てはまりの良さを判断する客観的な基準が必要になる。
+
+```{r OLSpre}
+# courtesy to
+# https://shohei-doi.github.io/notes/posts/2019-05-17-regression/
+
+n <- 50
+tibble(x = rnorm(n, 0, 1),
+       y = x + rnorm(n, 0, 1)) %>% 
+  ggplot() + 
+  geom_point(aes(x = x, y = y)) + 
+  geom_line(aes(x = x, y = x)) + 
+  geom_errorbar(aes(x = x, ymin = x, ymax = y),linetype="dotted")
+```
+
+上の図でいう垂直方向の直線は試しに引いてみた直線
+
+$$ \tilde{Y}=\tilde{a}+\tilde{b}x $$
+と実際の観測値との誤差を示すものである。この誤差の二乗を最小にするような直線が最も当てはまりの良い直線と考える。誤差を$u$とすれば、
+
+$$ \min J=\sum \tilde{u}_i^2=\sum(Y_i-\tilde{a}-\tilde{b}X_i)^2 $$
+
+の解である$\hat{a}$と$\hat{b}$を最小二乗推定量と呼ぶ。上式を微分してゼロとおくと、
+
+$$\frac{\partial J}{\partial \tilde{a}}=\sum(-2(Y_i-\hat{a}-\hat{b}X_i))=0$$
+及び
+
+$$\frac{\partial J}{\partial \tilde{b}}=\sum(-2X_i(Y_i-\hat{a}-\hat{b}X_i))=0$$
+となる。ここで、$\hat{a}$と$\hat{b}$は上式を満たす傾きと切片として、任意の$a$と$b$から区別する意味で使用している。これを変形すると以下を得る。
+
+$$n\hat{a}+\left(\sum X_i \right)\hat{b}=\sum Y_i$$
+及び
+
+$$ \left(\sum X_i \right)\hat{a}+\left(\sum X_i^2 \right)\hat{b}=\sum X_i Y_i$$
+これを連立して解くと、
+
+$$ \hat{b}=\frac{\sum \left(X_i - \overline{X}\right)\left(Y_i-\overline{Y}\right)}{\sum \left(X_i - \overline{X}\right)^2}$$
+及び
+
+$$\hat{a}=\overline{Y}-\hat{b} \overline{X} $$
+ただし、$\overline{X}$と$\overline{Y}$は平均値を意味する。
+
+$X$及び$Y$は観測値なので、観測値から傾きと切片を計算できることがわかる。また、回帰直線は必ず標本平均を通ることも確認できる。
+
+
+なお、最小二乗法に必要な仮定やその優れた性質については、
+
+http://www.yuhikaku.co.jp/books/detail/9784641053854
+
+などの入門の計量経済学の本を参照のこと。
+
+
+
+## 単回帰の事例
+
+```{r sigleOLS, warning=FALSE, message=FALSE}
+
+# Wooldridge (2016) Introductory Econometrics, Thomson.
+# の事例より。
+
+#######################################################
+# CEOのサラリーは会社のROEでどの程度説明できるか？
+#######################################################
+#
+# 自己資本利益率（ROE：Return on Equity）とは、自己資本（純資産）に対してどれだけの
+# 利益が生み出されたのかを示す財務分析の指標
+
+
+# from Wooldridge(2016, section 2.2)
+#ceosal1の最後の２文字は、小文字のエルと数字の１なので注意
+ceosal1<-read.dta("http://fmwww.bc.edu/ec-p/data/wooldridge/ceosal1.dta")
+
+ceoresult<-lm(salary~roe,data=ceosal1)
+
+summary(ceoresult)
+
+plot(ceosal1$roe,ceosal1$salary,ylim=c(0,4000))
+
+abline(ceoresult)
+
+
+
+#######################################################
+# 選挙費用で投票結果はどの程度説明できるか？
+#######################################################
+
+
+# from Wooldridge(2016, section 2.2のexample 2.5)
+# 1988年のアメリカのとある州における国会議員選挙の結果
+# voteAは候補者Aの得票シェア、shareAは候補者Aの選挙運動費のシェア
+
+vote1<-read.dta("http://fmwww.bc.edu/ec-p/data/wooldridge/vote1.dta")
+
+voteAresult<-lm(voteA~shareA,data=vote1)
+
+summary(voteAresult)
+
+plot(vote1$shareA,vote1$voteA)
+
+abline(voteAresult)
+
+
+```
+
+上の２つ目の結果で、shareAのt値は31.9でt分布の97.5%よりもはるかに大きな値となっている。そのためめったに起らない事象と位置付けることができる。
+
+この時の事象は帰無仮説：$\hat{b}=0$であるから、この帰無仮説を棄却し、$X$と$Y$は正の相関関係にあると言える。
+
+## 重回帰分析
+
+```{r multiOLS}
+
+#######################################################
+# 大学の成績は何で説明できるか？
+#######################################################
+
+
+# from Wooldridge(2016, example 4.3)
+# colGPA: 大学での成績
+# hsGPA: 高校での成績
+# ACT: 大学入試の際に受ける共通テストの成績
+# skipped: １週間の平均講義欠席回数
+
+gpa1<-read.dta("http://fmwww.bc.edu/ec-p/data/wooldridge/gpa1.dta")
+
+
+GPAresult<-lm(colGPA~hsGPA+ACT+skipped,data=gpa1)
+
+summary(GPAresult)
+
+plot(gpa1$colGPA,gpa1$skipped)
+
+
+```
+
+## 交差項
+```{r interaction}
+
+```
+
+
+## 因果推論 (Quasi Experiment)の例
+
+因果推論の方法として、Wooldridge(2016, Example 13.3)を例にDifference-in-Differencesを解説する。この例は、Kiel and McClain(1995, JEEM)からの抜粋であり、Massachusetts州のNorth Andoverにおいて、焼却炉を建設することで周辺の住宅価値が下がったかどうかをDifference-in-Differencesで分析している。
+
+分析の前提条件として、1978年には焼却炉建設の噂さえなかったが1981年には建設の噂が出回ったという背景がある。
+
+住宅価格($=rprice$)を、1981年のデータだけを使って焼却炉に近い物件のダミー変数($=nearinc$)で回帰する。
+
+$$ rprice=a+b\times nearinc+u $$
+```{r DiD1981}
+
+kielmc<-read.dta("http://fmwww.bc.edu/ec-p/data/wooldridge/kielmc.dta")
+
+# Separate regressions for 1978 and 1981: report coeeficients only
+coef( lm(rprice~nearinc, data=kielmc, subset=(year==1981)) )
+```
+
+$\hat{b}=-30,688.7$という結果を得る。$\hat{a}$は平均的な1981年の住宅価格を意味している。しかし、この結果は焼却炉建設の噂がもたらしたマイナス要因とは言えない。なぜなら、まだ噂がなかった1978年のデータだけで上記の式を回帰しても、$\hat{b}=-18824.37$というマイナスの結果となるためである。
+
+
+```{r DiD1978}
+
+kielmc<-read.dta("http://fmwww.bc.edu/ec-p/data/wooldridge/kielmc.dta")
+
+# Separate regressions for 1978 and 1981: report coeeficients only
+coef( lm(rprice~nearinc, data=kielmc, subset=(year==1978)) )
+```
+
+つまり、もともと住宅価格の安い地域に焼却炉の建設が行われたのである。よって、焼却炉立地の影響は、
+
+$$\hat{b}_{81}-\hat{b}_{78}=-30,68.27-(-18,824.37)=-11,863.9$$
+と考えるのが自然である。これを差の差の推定量(difference-in-differences estimator)と呼ぶ。なぜなら、
+
+$$\hat{b}_{81}-\hat{b}_{78}=\left(\overline{rprice}_{81,n}-\overline{rprice}_{81,f}\right)-\left(\overline{rprice}_{78,n}-\overline{rprice}_{78,f}\right)$$
+と書き直せるからである。ここで、添字の$n$は焼却炉に近い住宅の価格、$f$は遠い住宅の価格を表している。
+
+実践的には、統計的検定ができるように以下の回帰分析で推定量を計算する。
+
+$$rprice=a+b_{1} \cdot y81 + b_{2} \cdot  nearinc + b_{3} \cdot (y81 \times nearinc) + u$$
+を1978年と1981年の両方のデータを使って推定する。ただし、$y81$は1981年の住宅価格で1、1978年の住宅価格に対して0をとるダミー変数である。この時、$a$は1978年の平均住宅価格、$b_1$は1978年から1981年における住宅価格の変化を意味する。$b_2$は、焼却炉建設と関係なく、焼却炉周辺地域の住宅価格の他地域との差を表す。最後に、$b_3$は焼却炉建設の噂による価格変化を表す(=DiD estimator)。
+
+このように、焼却炉建設など政策の影響を受けるサンプルをTreatment groupと呼ぶ。影響を受けないグループをControl groupと言う。因果推論を行うためには、Treatment groupとControl groupの両方が必ず必要である。より一般には以下のように書ける。
+
+$$Y=a+b_{1} \cdot YD + b_{2} \cdot  T + b_{3} \cdot (YD \times T) +\mathbf{z}+ u$$
+ここで、$YD$はtreatmentの前と後でそれぞれ$0$と$1$をとるダミー変数、$T$はtreatmentのあるなしでそれぞれ$1$や$0$をとるダミー変数、$\mathbf{z}$はその他の変数をさす。DiD estimatorはもちろん$b_3$である。
+
+|      | Before | After | After - Before |
+| :---:| :---: | :---: | :---: |
+| Control | $a$ | $a+b_1$ |$b_1$ |
+| Treatment | $a+b_2$ | $a+b_1+b_2+b_3$ | $b_1+b_3$|
+| Treatment - Control | $b_2$ | $b_2+b_3$ | $b_3$ |
+
+
+
+### 例1
+
+```{r DiD1}
+# Joint regression including an interaction term 
+# 他のコントロール変数を含めない場合
+result1<- lm(rprice~nearinc+y81+I(nearinc*y81), data=kielmc)
+summary(result1)
+```
+
+### 例2
+
+```{r DiD2}
+# 住宅の築年数だけ含めた場合
+result2<- lm(rprice~nearinc+y81+age+I(age^2)+I(nearinc*y81), data=kielmc)
+summary(result2)
+```
+
+### 例3
+
+```{r DiD3}
+# 他のコントロール変数も含めた場合
+result3<- lm(rprice~nearinc+y81+age+I(age^2)+I(nearinc*y81)+intst+
+               land+area+rooms+baths, data=kielmc)
+summary(result3)
+
+```
+
+
+`modelsummary`というパッケージでまとめて表示できる。
+
+```{r maketable, results="asis"}
+
+DiDresults <-list(
+  "Base" = result1,
+  "With year"=result2,
+  "With all"=result3
+)
+
+modelsummary(DiDresults,stars = TRUE)
+```
+
+
+### logをとった場合
+
+効果を割合として解釈できる。より当てはまりがよくなる場合もある。
+
+```{r DiD4,results="asis"}
+DiD      <- lm(log(rprice)~nearinc*y81, data=kielmc)
+DiDcontr <- lm(log(rprice)~nearinc*y81+age+I(age^2)+log(intst)+
+                            log(land)+log(area)+rooms+baths, data=kielmc)
+
+DiDlogresults<-list(
+  "Base (log)"=DiD,
+  "With all (log)" = DiDcontr
+)
+
+modelsummary(DiDlogresults,stars = TRUE)
+```
+
+焼却炉立地の噂は13.2％の住宅価格押し下げ効果があったことがわかる。

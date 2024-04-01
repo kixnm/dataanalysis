@@ -1,0 +1,117 @@
+https://www.jaysong.net/r4ps/
+## 二軸グラフを作ろう
+```{r biaxial}
+#https://www.karada-good.net/analyticsr/r-752/
+#https://keita43a.hatenablog.com/entry/2022/07/13/182040
+#ggplot2を含むtidyverseパッケージの読み込み
+library("tidyverse")
+
+data("airquality")
+airquality %>% 
+  mutate(date = as.Date(paste(Month,Day,sep="-"), format="%m-%d"))->airquality
+
+ggplot(data=airquality,aes(x=date))+
+  geom_line(aes(y=Wind))+
+  geom_line(aes(y=Temp))
+
+#とりあえず描画
+#片方をスケール
+#2軸目を追加[scale_y_continuous(sec.axis=sec_axis())]
+#2軸目のラベルを追加
+
+ggplot(data=airquality,
+       aes(x=date)) +
+  geom_line(aes(y=Wind,col="Wind"))+
+  geom_line(aes(y=Temp-70,col="Temp"))+
+  scale_y_continuous(sec.axis = sec_axis(~.+70,
+                                         name="Temp(F)"),
+                     name="Wind(m2/s)")
+```
+
+
+## カルトグラム
+Ch.4ではコロプレス図を用いて、人口や降雪日数の度合いに応じた地図の塗分けを行いました。このコロプレスマップでは一見すると面積が大きい領域の印象を強く受けるため、面積と色の情報が結びついてしまうという注意点があります。この注意点を解決する方法として、カルトグラムという地図があります。  
+カルトグラムは、様々な統計の値に基づいて領域の面積が変化する地図を指します。このグラフは面積の大きさを直感的に理解しやすいため、コロプレス図で注意が必要な面積と色の乖離という問題を解決することができます。カルトグラムのなかにも、連続領域、不連続領域、図形など複数の種類がありますが今回は連続領域カルトグラムについて説明します。　　
+今回はCh.4で描いたコロプレスマップで使用した情報を利用して、各都道府県の人口に応じて面積を変えるカルトグラムを確認します。
+```{r cartogram}
+
+#一回だけ以下のインストールが必要
+#install.packages(c("NipponMap", "tidyverse","cartogram"))
+
+# ライブラリコマンドでの読み込みは毎回必要
+library(readxl)
+library(NipponMap)
+library(sf)
+library(tidyverse)
+library(cartogram)
+library(RColorBrewer)
+
+#ウェブサイトから直接ダウンロードする場合
+url1<-"https://yamamoto-masashi.github.io/DSlec/20201028sample.xls"
+#download.file(url1,destfile="20201028sample.xls")
+download.file(url1,destfile="20201028sample.xls",mode="wb")
+
+# エクセルファイルの読み込み
+# ヘッダ部分を読み飛ばしている
+# sheet=1を変更することで別のシートも読める
+sampleDB<-readxl::read_excel("20201028sample.xls",skip=5,sheet=1)
+
+# 変数の対応関係
+# A1101_総人口【人】	
+# A1301_15歳未満人口【人】
+# A1303_65歳以上人口【人】	
+# B1101_ 総面積（北方地域及び竹島を除く）【ｈａ】	
+# B1103_ 可住地面積【ｈａ】	
+# B4107_ 雪日数（年間）【日】	
+# B4108_ 日照時間（年間）【時間】	
+# D110101_市町村数【‐】	
+# E6102_大学数【校】	
+# E6302_大学学生数【人】
+# F610201_超過実労働時間数（男）【時間】	
+# F610202_超過実労働時間数（女）【時間】	
+# H110202_空き家数【戸】
+
+# 列１と列２の名前を変更している。
+names(sampleDB)[1:2]<-c("prefcode","prefnameJ")
+
+# データと地図を結合する際にキーの型が同じ必要があるので
+# 数値型を文字型に変更している。
+sampleDB$prefcode<-as.character(sampleDB$prefcode)
+
+# 地図の情報はNipponMapから取り出しています。
+# この方法は以下で教えていただきました。
+# https://ill-identified.hatenablog.com/entry/2020/12/07/134705
+Nippon_map <- read_sf(system.file("shapes/jpn.shp", package = "NipponMap")[1],
+               crs = "+proj=longlat +datum=WGS84")
+
+# 地図情報に総務省のデータベースを接続
+mapDB<-left_join(Nippon_map,sampleDB, by=c("SP_ID"="prefcode"))
+
+# 地図にプロット
+ggplot(mapDB, aes(fill = A1101)) + 
+  geom_sf() + 
+  scale_fill_gradientn(colors=brewer.pal(9,"GnBu"))+
+  #theme_gray (base_family = "HiraKakuPro-W3")+
+  theme_gray()+
+  labs(fill = "総人口")+
+  ggtitle("都道府県別の総人口 (2018年)")
+
+mapDB %>% 
+  st_transform(crs=2449) %>% 
+  cartogram_cont(.,"A1101",itermax = 5)->Cartogram
+
+ggplot(data=Cartogram)+
+  geom_sf(aes(fill=A1101))+
+  scale_fill_gradientn(colors=brewer.pal(9,"GnBu"))
+```
+各都道府県の塗りつぶしている色は同じですが、面積が変わっていることがわかります。  
+大きな変化として、東京都、愛知県、大阪府のような都市圏の面積が膨れ上がり、北海道、東北をはじめとする人口減少地域の面積が小さくなっています。  
+コロプレスマップでは、面積の大きな領域が強い印象を与えますが、カルトグラムでは数量的な情報を直感的に把握することができます。
+
+## バブルマップ
+
+## 2変量の質的変数(Ch.2)
+### サブグループ
+
+### 独立したグループ
+

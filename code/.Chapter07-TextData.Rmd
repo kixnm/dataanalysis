@@ -1,0 +1,267 @@
+#  RによるSNSデータの分析
+
+以下では、Twitterデータを使ったワードクラウドの作成と、Googleトレンドの`R`を使った操作を解説します。
+
+## Twitterデータの活用
+
+Twitterデータの取得・分析をおこないます。分析には、`rtweet`という`package`を使用します。ワードクラウドを作るための準備として、最初に形態素解析のためのソフトウェアを下記の手順でインストールします（ここは大きな山場です）。
+
+
+```{r packagesSNS}
+# install.packages("wordcloud2")
+
+library(ggplot2)
+library(rtweet)
+library(tidytext)
+library(dplyr)
+library(RMeCab)
+library(wordcloud2)
+library(lubridate)
+library(tidyr)
+library(stringr)
+
+
+# ディレクトリの設定
+# ここで指定したディレクトリにtmp_dataというフォルダを事前に作成する。
+#setwd("/Users/yamamoto/R/forTeaching/")
+
+```
+
+### Mecabのインストール
+
+はじめに日本語の形態素解析に必要なMecabというソフトウェアをインストールする。
+RMeCabについてはこちらのサイト(http://rmecab.jp/wiki/index.php?RMeCab)を参照すると良い。
+
+### 1.	Windowsの場合
+
+(1)	Mecabのインストール
+最初に MeCabをインストールします。ただし、R-4.2.0 以降、オリジナルのMeCabでは動作しません。ここ https://github.com/ikegami-yukino/mecab/releases から　64bit版MeCabをダウンロードし、辞書として必ずUTF-8を指定してください。また、RMeCabで解析するファイルは UTF-8 で保存してください（WindowsのデフォルトはShift-JISであり、全角文字が含まれるCSVファイルなどもRMeCabに読ませる場合はUTF-8に変更してください）。
+
+
+(2)	RMeCabのインストール
+MeCab本体がデフォルトとは違うフォルダにインストールされている場合、インストール先（デフォルトだとC:\Program Files\MeCab\etc）にあるmecabrcをコピーし、自分のホームフォルダ(C:\Users\mynameあるいはC:\Users\myname\documents）に、頭にドットを付けた .mecabrc ファイルとして用意する必要があります。その際、dicdir = を編集します。ちなみにデフォルトだとdicdir = C:\Program Files \MeCab\dic\ipadicとなっています。
+
+
+### 2.	Macの場合
+
+(1) MacがIntelかM1チップかを確認する。M1チップのMacに誤ってIntel版のRがインストールされていないかも確認する。
+
+(2)	Mecabの本家は[ここ](http://taku910.github.io/mecab/)ですが、今回はターミナルを立ち上げて以下を実行することで、 Mecab本体および使用する辞書のダウンロードからインストールまでを行います。この方法は、[こちら](https://github.com/IshidaMotohiro/RMeCab/issues/13)を参考にさせていただきました。
+
+cd ~/Downloads
+
+curl -fsSL 'https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE'  -o mecab-0.996.tar.gz
+
+tar xf mecab-0.996.tar.gz
+
+cd mecab-0.996
+
+./configure --with-charset=utf8
+
+make
+
+sudo make install
+
+以上でMeCabのインストールが終了する。
+
+(4)	ターミナルから以下を実行する（辞書のインストール）
+
+cd ~/Downloads
+
+curl -fsSL 'https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM'  -o mecab-ipadic-2.7.0-20070801.tar.gz
+
+tar zvxf mecab-ipadic-2.7.0-20070801.tar.gz
+
+tar xf mecab-ipadic-2.7.0-20070801.tar.gz
+
+cd mecab-ipadic-2.7.0-20070801
+
+./configure --with-charset=utf8
+
+make
+
+sudo make install
+
+
+以上でMeCabが使う辞書のインストールが終了する。
+
+以下をターミナルで確認する。
+
+$ mecab
+
+すもももももももものうち
+
+すもも	名詞,一般,*,*,*,*,すもも,スモモ,スモモ
+
+も	助詞,係助詞,*,*,*,*,も,モ,モ
+
+もも	名詞,一般,*,*,*,*,もも,モモ,モモ
+
+も	助詞,係助詞,*,*,*,*,も,モ,モ
+
+もも	名詞,一般,*,*,*,*,もも,モモ,モモ
+
+の	助詞,連体化,*,*,*,*,の,ノ,ノ
+
+
+
+
+### Twitterでの検索ワード
+
+以下の$x$に検索したいワードを指定する。
+$n$は入手するtweetの数（ただし、無料版では1週間程度しかさかのぼれない）。
+
+```{r searchword,warning=FALSE,message=FALSE,eval=FALSE}
+
+#検索ワード
+x="水卜アナ"
+
+# こちらにお世話になりました
+#https://medium.com/@afrasyab/the-best-way-to-use-r-to-get-twitter-data-56ad122194f
+#rt<-search_tweets(x, n=10000,include_rts = FALSE)
+
+```
+
+## ワードクラウド
+
+ワードクラウドでカウントしたくない記号などを排除する。
+
+```{r cleaning1,eval=FALSE}
+
+# 分析に加えたくない記号などを削除する
+rt$text <- gsub("https://.*", "", rt$text)
+rt$text <- gsub("@", "", rt$text)
+rt$text <- gsub("RT", "", rt$text)
+rt$text <- gsub("#", "", rt$text)
+rt$text <- gsub("\\(", "", rt$text)
+rt$text <- gsub("\\)", "", rt$text)
+rt$text <- gsub("/", "", rt$text)
+rt$text <- gsub(":", "", rt$text)
+
+# こちらにお世話になりました
+# https://note.com/text_tier2718/n/n6b20ccd3cb49
+rt$text <- rt$text %>%
+  str_replace_all(pattern = '\\p{ASCII}',replacement = "") # 記号を消します。
+```
+
+
+形態素解析を実施
+
+```{r cleaning2,eval=FALSE}
+rt_text <- rt$text %>% 
+  na.omit() %>% 
+  #iconv(from = "UTF-8", to = "CP932") %>%  # windowsのみEncodeの変更が必要です。
+  paste(collapse = "")    # テキストを結合
+textfile <- tempfile()    # 一時ファイルの入れ物を作成
+write(rt_text, textfile) # docDFで読むために一時ファイルを作成
+
+cloud <- docDF(textfile, type = 1) #形態素解析を行う際に特定の品詞に絞って抽出
+#cloud <- docDF(textfile, type = 1, pos = "名詞") 
+
+unlink(textfile) # 一時ファイル消去
+cloud <- cloud %>% 
+  select(everything(), FREQ = starts_with("file")) %>% # 4列目のfile****....という名前が長いためFREQへ変更
+  arrange(desc(FREQ))
+
+# 消したい不要なワードを設定
+exclude_word = c("する","なる","やる","ある","いる","-","♪","エリザベス","女王",x)
+
+# 動詞と名詞で良い感じのやつを残す
+cloud2 <- cloud %>%
+  filter(grepl(pattern = "動詞|名詞", x = POS1) &
+           !grepl(pattern = "助動詞|代名詞", x = POS1) &
+           !grepl(pattern = "非自立|接尾|数|代名詞", x = POS2)
+  ) %>%
+  filter(!TERM %in% exclude_word)
+
+```
+
+可視化をする。
+
+```{r wordcloudvis,eval=FALSE}
+# Takaoフォント様 https://launchpad.net/takao-fonts
+cloud2 %>%
+  select(TERM,FREQ) %>%
+  slice(1:100) %>% # 描画する範囲を設定
+  wordcloud2(fontFamily = 'Takao Pゴシック', color = "random-light",
+             minRotation = 0, maxRotation = 0, size = 1.2)
+
+```
+
+
+## 口コミ情報の分析
+```{r}
+FlickrAPI
+```
+
+
+## Googleトレンドの分析
+
+社会トレンドを分析できる別の手段として、Googleトレンドがあります。検索数ではなく、相対的な変化を表すものですが、人々の関心の変化を時系列で見る上では非常に参考になります。Googleトレンドは、`gtrendsR`という`package`で分析することが可能です。
+
+```{r SNSintro2}
+
+#install.packages("gtrendsR")
+
+library(gtrendsR)
+
+# 以下は、https://skume.net/entry/2021/03/28/023122より
+#引数について
+#keyword: Google Trends query キーワードである文字ベクトル。複数のキーワード入力も可。
+#geo: queryの地理的な地域を示す文字ベクトル。世界中の場合には、"all"を指定する。
+#また上記の国コードなどを使用することで、複数の国・地域を指定できる。
+#time: queryの期間を指定する文字列。以下を参照のこと。
+#"now 1-H" 最後の1時間
+#"now 4-H" 最後の4時間
+#"now 1-d" 最後の1日
+#"now 7-d" 過去7日間
+#"today 1-m" 過去30日間
+#"today 3-m" 過去90日
+#"today 12-m" 過去12ヶ月
+#"today+5-y" 過去5年間(デフォルト)
+#"all" Google Trends の開始時（2004 年）から
+#"Y-m-d Y-m-d" 2つの日付の間で指定（例：「2010-01-01 2010-04-03」）
+
+
+trendWB5yrs <- gtrends(keyword = "女子バスケ", 
+                         geo = "JP", #地域
+                         time = "today+5-y") #期間(例：五年)
+plot(trendWB5yrs)
+```
+
+デフォルトの`plot`関数では凡例が文字化けするようなので、`ggplot2`にて描画します。
+
+
+```{r SNSintro3}
+
+trendWB7days <- gtrends(keyword = "女子バスケ", 
+                         geo = "JP", #地域
+                         time="now 7-d") 
+
+trendWB7days %>%
+  .$interest_over_time %>%
+  ggplot(aes(x = date, y = hits)) +
+  geom_line(colour = "darkblue", size = 1.5) +
+  theme_bw(base_family = "HiraKakuPro-W3")+
+  ggtitle("直近１週間の検索数の推移(キーワード：「女子バスケ」)")
+
+```
+
+複数キーワードに挑戦してみよう。
+
+```{r SNSintro4}
+
+search_words<-c("女子バスケ", "野球日本代表")
+
+Olympics <- gtrends(keyword = search_words, 
+                         geo = "JP", #地域
+                         time="2021-07-21 2021-08-08") 
+
+Olympics %>%
+  .$interest_over_time %>%
+  ggplot(aes(x = date, y = hits, color=keyword)) +
+  geom_line( size = 1.5) +
+  ggtitle("オリンピック期間中のキーワード検索の推移")
+```
+
+上記の例では、`time="2021-07-21 2021-08-08"`というフォーマットで期間を設定している点にも注意しよう。これをみると、日本女子バスケットボール代表の快進撃で検索数が大きく増加していることがわかる。

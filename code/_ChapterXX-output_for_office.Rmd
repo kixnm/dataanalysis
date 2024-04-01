@@ -1,0 +1,12 @@
+# Output for MIcrosoft Office
+
+## 図表作成
+図表の作成に関して、Rstudioを使うとデータハンドリングから作成まで一貫して一つのソフトウェアで行うため、再現性が担保されやすいです。しかしながら現在でもWordやpptを使用する際には、図表を一度保存して貼り付けを行う工程中に思っていた様式と異なる形になり、調整に手間取られます。
+
+```{r}
+library(devtools)
+install_github("guokai8/eoffice")
+library(eoffice)
+
+```
+

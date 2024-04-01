@@ -1,0 +1,48 @@
+# Rによる因果推論
+
+```{r package_causal, warning=FALSE,error=FALSE}
+
+
+```
+
+## Staggered Difference in diffrecens
+基本的なDID(Difference in differences)は介入が１時点を想定している。
+実際には介入が複数時点の場合には早い段階で介入を受けたearly adopterと遅い段階で介入を受けたlater adopterの間で効果が異なる可能性がある。
+したがって、早い段階で処置を受けた介入群と遅い段階で処置を受けた介入群に対してウェイトをかけて計算する。
+
+ここではfeolsパッケージを使ったSun and Abrahamの手法を説明する。
+
+```{r}
+#install.packages("fixest")
+library(fixest)
+```
+
+### 参考
+Laurent Berge (https://lrberge.github.io/fixest/)
+Difference in differences (https://asjadnaqvi.github.io/DiD/)
+
+## Marginal Treatment Effect
+Heckman and Vytacil (2005)が提案したMarginal Treatment Effect (MTE)を実装するパッケージの紹介
+```{r}
+#install.packages("ivmte")
+
+library(ivmte)
+```
+
+
+### 参考
+Joshua Shea and Alexander Torgovitsky '(https://cran.r-project.org/web/packages/ivmte/vignettes/ivmte.html)
+
+## RDD
+回帰不連続デザイン(Regression Discontinuity Design: RDD)は介入の因果効果を推定するための疑似実験の一種
+ある閾値の両側の観測値を介入群と対照群に分割して違いを見る。
+
+```{r}
+install.packages()
+```
+
+
+### 参考
+Ryohei Yamamoto (https://rpubs.com/Ryohei/709855)
+Yuki Yanai (https://yukiyanai.github.io/econometrics2/regression-discontinuity.html)
+Masahiko Asano (http://www.ner.takushoku-u.ac.jp/masano/class_material/waseda/keiryo/R27_reg10_RDD_basic.html)

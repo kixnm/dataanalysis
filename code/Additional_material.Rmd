@@ -1,0 +1,303 @@
+---
+title: "Untitled"
+author: "Kai Nomura"
+date: "2023-05-18"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("D:/Offline_folder/Tokai/Tokai_DataAnalysis/dataanalysis")
+```
+
+## 質的な変数：サブグループ
+TIPSより事前に"sample.csv"というデータをダウンロードしてください。
+```{r data1}
+#install.package("wooldridge")
+
+sample1<-wooldridge::bwght2 %>% 
+  select(mage,meduc) %>% 
+  mutate(mother_age=case_when(mage<20~"Under20",
+                              mage>=20 & mage<30~"20-29",
+                              mage>=30 & mage<40~"30-39",
+                              mage>=40 & mage<50~"40-49",
+                              TRUE~"NA"),
+         mother_educ=case_when(meduc<=6~"<7years",
+                         meduc>6 & meduc<=9~"6-9years",
+                         meduc>9 & meduc<=12~"9-12years",
+                         meduc>12 & meduc<=16~"12-16years",
+                         TRUE~">16years"))
+
+# mage:妊娠している母親の年齢
+# meduc:妊娠している母親の教育年数
+
+```
+### 横並び棒グラフ
+2つの質的変数を組み合わせて、横並びに表示するグラフです。グラフの見方は2通りあり、1つ目の見方は「**ある質的変数Aの各群のなかで、もう1つの質的変数Bの各群の大小を比較する**」もので、グループ内比較と呼びます。2つ目の見方は「**質的変数Bのとある群について、もう一方での質的変数の群間で大小を比較する**」ものでグループ間比較と呼びます。例として、ある病気の患者の重症度（軽症、中等症、重症）と年齢（40代、50代、60代、70代）との関係をみるとき、年齢順・重症度順に人数を横に並べます。すると、軽症のなかで、どのような年代が多いのか比較（グループ内比較）と70代以上の人が多いのはどの重症度か比較（グループ間比較）を行うことができます。一方で、グループごとの総人数の把握のときには適さないので、通常の棒グラフや積み上げグラフを作成した方が良いケースもあります。
+
+```{r grouped_bar_chart}
+table_age_educ<-sample1 %>% 
+  count(mother_age,mother_educ) %>% #年代・教育年数の組み合わせの各人数を集計
+  mutate(mother_educ=fct_relevel(mother_educ, 
+                           c("<7years","6-9years","9-12years","12-16years",">16years")),
+         mother_age=fct_relevel(mother_age,
+                            c("Under20","20-29","30-39","40-49"))) #factor型の順番を整理
+
+ggplot(data=table_age_educ,aes(x=mother_age,y=n,fill=mother_educ))+
+  geom_bar(stat="identity",position="dodge",color="black")+
+  scale_fill_brewer(palette="Greys")+
+  theme_classic()+
+  labs(y="count")+
+  guides(fill=guide_legend(reverse=TRUE))
+
+#stat="identity"は棒グラフ作成
+#geom_bar(position="dodge)は「避ける」という意味で横並びにする命令
+```
+横軸にmother_ageでまとめた10歳ごとの群が示されています。それぞれの年齢階級で5つの色で異なる棒グラフが描かれていますが、これは母親の教育年数です。確認するポイントは2点あります。1つ目は「それぞれの年齢階級で、異なる教育年数の群の人数がどのようになっているか」です。20代では9-12年教育を受けたの人が最も多いですが、30代になると12-16年と回答する人が最も多くなっています。2つ目の確認するポイントは「ある特定の教育年数の群に含まれる人数は、異なる年齢層でどのような違いがあるか」です。教育年数が7年未満(白い棒グラフ)同士を比較すると、10代や40代では確認されず、20代や30代では最も少ないことがわかります。  
+ここでは年齢階級ごとの回答者数が異なるので、本来は単純な人数同士の比較では誤解を招く可能性があり、回答者数に占める各睡眠時間の割合で比べた方が正確です。したがって少し不格好ですが、先に年齢階級ごとの総回答者数を計算することで各年齢階級の教育年数別の比率を計算することができます。
+```{r grouped_bar_chart}
+table_age<-sample1 %>% 
+  count(mother_age) %>% 
+  rename(Age_n=n)
+
+table_age_educ_revise<-sample1 %>% 
+  count(mother_age,mother_educ) %>% #年代・教育年数の組み合わせの各人数を集計
+  left_join(table_age,by="mother_age") %>%   mutate(mother_educ=fct_relevel(mother_educ, 
+                           c("<7years","6-9years","9-12years","12-16years",">16years")),
+         mother_age=fct_relevel(mother_age,
+                            c("Under20","20-29","30-39","40-49"))) %>% 
+  mutate(ratio=n/Age_n) 
+
+ggplot(data=table_age_educ_revise,aes(x=mother_age,y=ratio,fill=mother_educ))+
+  geom_bar(stat="identity",position="dodge",color="black")+
+  scale_fill_brewer(palette="Greys")+
+  theme_classic()+
+  labs(y="ratio")+
+  guides(fill=guide_legend(reverse=TRUE))
+```
+こちらのグラフでも1つ目のポイントである「それぞれの年齢階級で、異なる教育年数の群の人数がどのようになっているか」については変わりません。しかし、「ある特定の教育年数の群に含まれる人数は、異なる年齢層でどのような違いがあるのか」に関しては、40代の大小関係は先ほどより多少変わります。先ほどより明らかに40代のなかで教育年数が9-12年の人々が一番多く占めていることが確認できます。
+
+### 積み上げ棒グラフ
+棒の長さによって、実際の値や割合を表すグラフです。縦軸を数値にしたグラフを「積み上げ棒グラフ」、割合にしたものを「100%積み上げ棒グラフ」と呼びます。  
+```{r　stacked_bar_chart}
+ggplot(data=table_age_educ_revise,aes(x=mother_age,y=n,fill=mother_educ))+
+  geom_bar(stat="identity",color="black")+
+  scale_fill_brewer(palette="Greys",direction=-1)+
+  theme_classic()+
+  labs(y="count")+
+  guides(fill=guide_legend(reverse=TRUE))
+
+```
+
+この積み上げ棒グラフから、Age_10で分けたグループにはSleepという6つのサブグループがあることがわかります。また、通常の棒グラフ同様に合計人数に関して50代が一番多く、30代が一番少ないことがわかります。他方で、50代と60代の6-7時間睡眠の人々はどちらが多いのか、一見して判断することが難しいです。  
+
+```{r stacked_ratio_bar_chart}
+ggplot(data=table_age_educ_revise,aes(x=mother_age,y=n,fill=mother_educ))+
+  geom_bar(stat="identity",position="fill",color="black")+
+  scale_fill_brewer(palette="Greys",direction=-1)+
+  scale_y_continuous(labels=scales::percent)+
+  theme_classic()+
+  labs(y="percentage")
+```
+この100%積み上げ棒グラフから、Age_10で分けたグループにはSleepという6つのサブグループがあることがわかります。また、先ほどの積み上げ棒グラフと異なり、各年齢階級ごとの睡眠時間の構成割合がわかります。他方で、どれだけの人数が含まれているか、という情報がありませんので、各グループに何人が含まれているのかという情報は別途確認する必要があります。 
+
+
+## 質的な変数：独立したリスト
+```{r data2}
+sample2<-read.csv("sample.csv") %>% 
+  select(ID,Obese,Hypertension,Hyperglycemia,Drug_2010,Drug_2015,Drug_2020)
+head(sample2)
+
+# ID:各データのID
+# Obese:内臓脂肪
+# Hypertension:高血圧値
+# Hyperglycemia:高血糖値
+#Drug_2010, Drug_2015, Drug_2020:各年次の常備薬の個数
+```
+上のデータはメタボリックシンドロームの診断基準に基づいて、内臓脂肪、高血圧、高血糖それぞれの基準を超えている場合に1、超えていない場合に0をとるダミー変数と2010～2020年の5年おきの各個人の常備薬の個数のデータが格納されています。  
+
+### サンキー図
+複数の質的変数に含まれるグループ同士の関連性を示すグラフです。左側をスタートに、各グループから右側のグループへと変数の時間経過を示すことができます。
+```{r Sankey_diagram}
+install.packages("networkD3")
+library(networkD3)
+
+sample2 %>% 
+  group_by(Drug_2010,Drug_2015,Drug_2020) %>% 
+  summarise(count=n()) #各年代の常備薬数を確認
+
+sample2 %>% 
+  count(Drug_2010,Drug_2015) %>% 
+  rename(source=Drug_2010,
+         target=Drug_2015) %>% 
+  mutate(ID_source=c(rep(c(0,1,2,3),each=2),4),
+         ID_target=c(5,6,6,7,7,8,8,9,9))->table_sankey1 #2010-2015間の常備薬数の変遷
+
+sample2 %>% 
+  count(Drug_2015,Drug_2020) %>% 
+  rename(source=Drug_2015,
+         target=Drug_2020) %>% 
+  mutate(ID_source=c(rep(c(5,6,7,8),each=2),9),
+         ID_target=c(10,11,11,12,12,13,13,14,14))->table_sankey2　#2015-2020間の常備薬数の変遷
+
+table_sankey<-data.frame(rbind(table_sankey1,table_sankey2))
+nodes<-data.frame(name=rep(c("0","1","2","3","4"),3))
+
+sankeyNetwork(Links = table_sankey,
+              Nodes=nodes,
+              Source = "ID_source",
+              Target = "ID_target",
+              Value = "n",
+              NodeID = "name",
+              fontSize = 20,
+              sinksRight = FALSE)
+```
+このグラフから、常備薬は全体として時間とともに増えることがわかります。また、2010年から2015年、2015年から2020年への時間の経過とともに常備薬の数が減る人はいないこともわかります。このサンキー図を書く際には、変数のグループを増やしすぎないように注意してください。グループが多くなると帯が複雑になり、解釈が困難になる場合があります。
+
+## 質的な変数：入れ子
+```{r data3}
+sample3<-read.csv("sample.csv") %>% 
+  select(ID,Chihou,Area,Death,ICD10,ICD10_cat)
+head(sample3)
+
+# ID:各データのID
+# Chihou:地方
+# Area:居住地
+# Death:死亡ダミー
+# ICD10:死因
+# ICD10_cat:死因コード接頭アルファベット
+```
+このデータではChihou(地方)とArea(都道府県)、ICD10とICD10_catという階層構造を持つデータとなっています。つまり、関東地方の中に東京都や神奈川県という情報が内包され、ICD10という死因分類は大分類・中分類・小分類が決められています。このような入れ子構造のデータを可視化する方法の1つとしてツリーマップがあります。  
+```{r Tree_map1}
+#install.packages("treemapify")
+library(treemapify)
+
+sample3 %>% 
+  count(Area,Chihou) %>% 
+  mutate(Chihou=fct_infreq(Chihou))->table_tree_area
+
+ggplot(table_tree_area)+
+  aes(area=n,fill=Chihou,label=Area,subgroup=Chihou)+
+  geom_treemap()+
+  geom_treemap_subgroup_border(color="black")+
+  labs(fill="Chihou")
+```
+このグラフでは、データ内にある各地方と各都道府県に居住する回答者の割合を可視化しています。都道府県を分割しているのが白い線、地方を分割しているのが黒い線です。今回のデータでは、中部地方の回答者が多いことがわかります。内訳では、7つの都道府県があり、特に2つの都道府県に在住の人に偏っていることが示されています。次に大きな面積は近畿地方ですが、片方の都道府県が大勢を占めています。  
+
+```{r Tree_map2}
+
+sample3 %>% 
+  count(ICD10,ICD10_cat) %>% 
+  drop_na()->table_tree_ICD
+
+ggplot(table_tree_ICD)+
+  aes(area=n,fill=ICD10_cat,label=ICD10,subgroup=ICD10_cat)+
+  geom_treemap(color="white")+
+  geom_treemap_subgroup_border(color="black")+
+  geom_treemap_text(place="topleft",alpha=0.8,color="black")+
+  geom_treemap_subgroup_text(place="centre",color="black",fontface="italic")+
+  labs(fill="ICD10 category")
+```
+こちらのグラフでは、ICD10という疾病、傷害および死因の統計分類で区分したモノです。一番面積が広いのは"C"であり、悪性新生物(ガン)によるものとわかります。さらに内訳の"C349"は気管支および肺、C189"は結腸に関するものなどの区分がされています。”I”は心筋梗塞や脳卒中、"R54"は老衰となっています。このように階層構造のデータに関して各要素の比率を可視化する面で便利なツリーマップですが、割合の大小比較は棒グラフの方が正確であることや3階層以上のデータには適さないことに注意してください。  
+
+## 量的な変数：多変量
+### バブルプロット
+バブルプロットは複数の量的な変数の関係性を表すグラフとされています。このグラフではX軸とY軸に加えて、バブルの大きさ、色を用いることで最大4つの尺度を可視化することができる散布図の発展版のようなものです。
+```{r bubble_plot}
+sample4<-read.csv("pref_tokai.csv") 
+
+# pref_no:
+# pref_name:
+# density:人口密度
+# income_pop:一人当たり所得
+# mortality_pop:人口1000人あたりの死亡率
+```
+
+```{r}
+ggplot(data=sample4)+
+  aes(x=income_pop,y=mortality_pop,size=density)+
+  geom_point(alpha=0.8)+
+  scale_size_continuous(range=c(0.1,10),name="density(/km2)")+
+  theme_classic()+
+  labs(x="Income per capita(yen)",y="Mortality rate (/thousand)")
+```
+散布図と比べて多くの情報を可視化することがバブルプロットでは可能となっています。この図を見ると、一人あたり所得た高い都道府県ほど1000人あたりの死亡率が低いという負の相関が読み取れるとともに、死亡率が低い都道府県ほど人口密度が高いこともバブルの大きさから推測できます。したがって、人口密度と死亡率についても負の相関があるかもしれません。  
+このバブルプロットは、散布図の拡張版なので主たる関係性は自分で設定するX軸とY軸に焦点を当てています。よって、関心のある2つの変数を軸として選び、かつ2つの変数間の関係性をサブグループ的に分割して見たいときに役立つかと思われます。また、バブルの大きさを表す変数が負の値をとる場合には、「大きさがマイナス」を表現することは困難であるため、色で正負を分けて大きさが絶対値を表すなどの工夫が求められます。  
+
+## カルトグラム
+Ch.4ではコロプレス図を用いて、人口や降雪日数の度合いに応じた地図の塗分けを行いました。このコロプレスマップでは一見すると面積が大きい領域の印象を強く受けるため、面積と色の情報が結びついてしまうという注意点があります。この注意点を解決する方法として、カルトグラムという地図があります。  
+カルトグラムは、様々な統計の値に基づいて領域の面積が変化する地図を指します。このグラフは面積の大きさを直感的に理解しやすいため、コロプレス図で注意が必要な面積と色の乖離という問題を解決することができます。カルトグラムのなかにも、連続領域、不連続領域、図形など複数の種類がありますが今回は連続領域カルトグラムについて説明します。　　
+今回はCh.4で描いたコロプレスマップで使用した情報を利用して、各都道府県の人口に応じて面積を変えるカルトグラムを確認します。
+```{r cartogram}
+
+#一回だけ以下のインストールが必要
+#install.packages(c("NipponMap", "tidyverse","cartogram"))
+
+# ライブラリコマンドでの読み込みは毎回必要
+library(readxl)
+library(NipponMap)
+library(sf)
+library(tidyverse)
+library(cartogram)
+library(RColorBrewer)
+
+#ウェブサイトから直接ダウンロードする場合
+url1<-"https://yamamoto-masashi.github.io/DSlec/20201028sample.xls"
+#download.file(url1,destfile="20201028sample.xls")
+download.file(url1,destfile="20201028sample.xls",mode="wb")
+
+# エクセルファイルの読み込み
+# ヘッダ部分を読み飛ばしている
+# sheet=1を変更することで別のシートも読める
+sampleDB<-readxl::read_excel("20201028sample.xls",skip=5,sheet=1)
+
+# 変数の対応関係
+# A1101_総人口【人】	
+# A1301_15歳未満人口【人】
+# A1303_65歳以上人口【人】	
+# B1101_ 総面積（北方地域及び竹島を除く）【ｈａ】	
+# B1103_ 可住地面積【ｈａ】	
+# B4107_ 雪日数（年間）【日】	
+# B4108_ 日照時間（年間）【時間】	
+# D110101_市町村数【‐】	
+# E6102_大学数【校】	
+# E6302_大学学生数【人】
+# F610201_超過実労働時間数（男）【時間】	
+# F610202_超過実労働時間数（女）【時間】	
+# H110202_空き家数【戸】
+
+# 列１と列２の名前を変更している。
+names(sampleDB)[1:2]<-c("prefcode","prefnameJ")
+
+# データと地図を結合する際にキーの型が同じ必要があるので
+# 数値型を文字型に変更している。
+sampleDB$prefcode<-as.character(sampleDB$prefcode)
+
+# 地図の情報はNipponMapから取り出しています。
+# この方法は以下で教えていただきました。
+# https://ill-identified.hatenablog.com/entry/2020/12/07/134705
+Nippon_map <- read_sf(system.file("shapes/jpn.shp", package = "NipponMap")[1],
+               crs = "+proj=longlat +datum=WGS84")
+
+# 地図情報に総務省のデータベースを接続
+mapDB<-left_join(Nippon_map,sampleDB, by=c("SP_ID"="prefcode"))
+
+# 地図にプロット
+ggplot(mapDB, aes(fill = A1101)) + 
+  geom_sf() + 
+  scale_fill_gradientn(colors=brewer.pal(9,"GnBu"))+
+  #theme_gray (base_family = "HiraKakuPro-W3")+
+  theme_gray()+
+  labs(fill = "総人口")+
+  ggtitle("都道府県別の総人口 (2018年)")
+
+mapDB %>% 
+  st_transform(crs=2449) %>% 
+  cartogram_cont(.,"A1101",itermax = 5)->Cartogram
+
+ggplot(data=Cartogram)+
+  geom_sf(aes(fill=A1101))+
+  scale_fill_gradientn(colors=brewer.pal(9,"GnBu"))
+```
+各都道府県の塗りつぶしている色は同じですが、面積が変わっていることがわかります。大きな変化として、東京都、愛知県、大阪府のような都市圏の面積が膨れ上がり、北海道、東北をはじめとする人口減少地域の面積が小さくなっています。コロプレスマップでは、面積の大きな領域が強い印象を与えますが、カルトグラムでは数量的な情報を直感的に把握することができます。  
+
+この資料は藤井亮輔・鈴木康司「超入門！Rでできるビジュアル統計学」を参考に作成している。
