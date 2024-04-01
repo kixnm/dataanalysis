@@ -19,3 +19,4 @@
 
 - [Rmarkdown入門 (by kazutan on web)](https://kazutan.github.io/kazutanR/Rmd_intro.html)
 - [Rmarkdown入門 (by Jaehyun Song)](https://www.jaysong.net/tutorial/R/rmarkdown_intro.html/)
+- [R Markdown クックブック](https://gedevan-aleksizde.github.io/rmarkdown-cookbook/)
