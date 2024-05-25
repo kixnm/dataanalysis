@@ -346,6 +346,7 @@ print(p)
 はじめにそれぞれの地図を作成する。
 
 ```{r twomap,  warning=FALSE, message=FALSE}
+#install.packages("cowplot")
 library(sf)
 library(cowplot)
 
@@ -373,12 +374,12 @@ KanaMap |>
 
 #湘南地域の地図をShaMapと命名
 ShoMap<-
-  geom_sf(data=ShonanMap, size=0.8)
+  geom_sf(data=ShonanMap, linewidth=0.8)
 
 
 #湘南地域の可視化
 ggplot()+
-  geom_sf(data=KanaMap, size=0.1)+ShoMap+
+  geom_sf(data=KanaMap, linewidth=0.1)+ShoMap+
   theme(axis.ticks = element_blank(), 
         axis.text.x = element_blank(), 
         axis.text.y = element_blank())->ggm1
